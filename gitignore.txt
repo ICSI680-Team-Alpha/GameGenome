@@ -1,0 +1,7 @@
+#Include files that should be ignored by git when committing changes to remote repository
+.idea
+node_modules
+./a3/.env
+*/.env
+build
+/build
