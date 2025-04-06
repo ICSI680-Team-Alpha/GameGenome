@@ -1,0 +1,75 @@
+.main-container {
+  background-image: url('/Images/Background.png');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4rem;
+  padding-bottom: 1rem;
+  position: relative;
+}
+
+.logo {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 500px;
+  height: auto;
+}
+
+.button-container {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.white-button {
+  background-color: white !important;
+  color: black !important;
+}
+
+.h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.h2 {
+  font-size: 2rem;
+  color: white;
+  text-align: center;
+  padding-left: 500px;
+  padding-right: 500px;
+}
+
+.info-box-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.info-box {
+  background-color: rgba(128, 128, 128, 0.5);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.box-header {
+  font-size: 2rem;
+  color: white;
+  text-align: center;
+  padding-bottom: 10px;
+}
