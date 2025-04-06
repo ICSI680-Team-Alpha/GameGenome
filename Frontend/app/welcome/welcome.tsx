@@ -1,6 +1,9 @@
-import React from 'react';
 import Button from '@mui/material/Button';
 import './welcome.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightToBracket, faClipboard, faCircleCheck, faBullseye } from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
+
 
 const Welcome = () => {
   return (
@@ -12,17 +15,18 @@ const Welcome = () => {
           className="white-button"
           onClick={() => console.log('Sign Up button clicked')}
         >
-          Sign Up
+          <FontAwesomeIcon icon={faRightToBracket} /> &nbsp;Sign Up
         </Button>
         <Button
           variant="contained"
           className="white-button"
           onClick={() => console.log('Log in button clicked')}
         >
-          Log in
+          <FontAwesomeIcon icon={faClipboard} /> &nbsp;Log in
         </Button>
       </div>
       <div>
+
         <h1 className="h1">Discover your gaming DNA</h1>
         <div className="h2">
           Welcome to Game Genome. Your one stop research facility into your gaming personality.
@@ -32,14 +36,17 @@ const Welcome = () => {
         <div className="h1">How it works</div>
         <div className="info-box-container">
           <div className="info-box">
+            <FontAwesomeIcon icon={faCircleCheck} style={{ fontSize: '40px' }} /> &nbsp;
             <div className="box-header">How it works</div>
             <div>Pick your favorite games to start your DNA profile</div>
           </div>
           <div className="info-box">
+            <FontAwesomeIcon icon={faBullseye} style={{ fontSize: '40px' }} /> &nbsp;
             <div className="box-header">Analyze</div>
             <div>Quick personality quiz to understand your gaming style</div>
           </div>
           <div className="info-box">
+            <FontAwesomeIcon icon={faHeart} style={{ fontSize: '40px' }} /> &nbsp;
             <div className="box-header">Match</div>
             <div>Get personalized game recommendations that fit you</div>
           </div>
