@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightToBracket, faClipboard, faCircleCheck, faBullseye } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
-
 const Welcome = () => {
   return (
     <div className="main-container">
@@ -26,7 +25,6 @@ const Welcome = () => {
         </Button>
       </div>
       <div>
-
         <h1 className="h1">Discover your gaming DNA</h1>
         <div className="h2">
           Welcome to Game Genome. Your one stop research facility into your gaming personality.
@@ -50,6 +48,15 @@ const Welcome = () => {
             <div className="box-header">Match</div>
             <div>Get personalized game recommendations that fit you</div>
           </div>
+        </div>
+        <div className="button-container-centered">
+          <Button
+            variant="contained"
+            className="white-button"
+            onClick={() => console.log('Get Started Now button clicked')}
+          >
+            <FontAwesomeIcon icon={faRightToBracket} /> &nbsp;Get Started Now
+          </Button>
         </div>
       </div>
     </div>

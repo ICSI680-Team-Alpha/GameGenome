@@ -71,5 +71,11 @@
   font-size: 2rem;
   color: white;
   text-align: center;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
+}
+
+.button-container-centered {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
 }
