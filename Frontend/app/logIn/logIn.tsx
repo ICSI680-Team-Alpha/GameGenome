@@ -1,5 +1,6 @@
 import './logIn.css';
 import { TextField, Button, Box, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const LogIn = () => {
   return (
@@ -45,6 +46,7 @@ const LogIn = () => {
         >
           Log In
         </Button>
+        
       </Box>
     </div>
   );
