@@ -3,8 +3,8 @@ import LogIn from "../logIn/logIn";
 
 export function meta({ }: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Log In - GameGenome" },
+    { name: "description", content: "Log in to your GameGenome account to explore personalized game recommendations!" },
   ];
 }
 
