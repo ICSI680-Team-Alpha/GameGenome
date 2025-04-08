@@ -11,14 +11,14 @@ const Welcome = () => {
       <div className="button-container">
         <Button
           variant="contained"
-          className="white-button"
+          sx={{ backgroundColor: '#FFFFFF', color: '#000000' }}
           onClick={() => console.log('Sign Up button clicked')}
         >
           <FontAwesomeIcon icon={faRightToBracket} /> &nbsp;Sign Up
         </Button>
         <Button
           variant="contained"
-          className="white-button"
+          sx={{ backgroundColor: '#FFFFFF', color: '#000000' }}
           onClick={() => console.log('Log in button clicked')}
         >
           <FontAwesomeIcon icon={faClipboard} /> &nbsp;Log in
@@ -34,17 +34,17 @@ const Welcome = () => {
         <div className="h1">How it works</div>
         <div className="info-box-container">
           <div className="info-box">
-            <FontAwesomeIcon icon={faCircleCheck} style={{ fontSize: '40px' }} /> &nbsp;
+            <FontAwesomeIcon icon={faCircleCheck} className="icon" /> &nbsp;
             <div className="box-header">How it works</div>
             <div>Pick your favorite games to start your DNA profile</div>
           </div>
           <div className="info-box">
-            <FontAwesomeIcon icon={faBullseye} style={{ fontSize: '40px' }} /> &nbsp;
+            <FontAwesomeIcon icon={faBullseye} className="icon" /> &nbsp;
             <div className="box-header">Analyze</div>
             <div>Quick personality quiz to understand your gaming style</div>
           </div>
           <div className="info-box">
-            <FontAwesomeIcon icon={faHeart} style={{ fontSize: '40px' }} /> &nbsp;
+            <FontAwesomeIcon icon={faHeart} className="icon" /> &nbsp;
             <div className="box-header">Match</div>
             <div>Get personalized game recommendations that fit you</div>
           </div>
@@ -52,7 +52,7 @@ const Welcome = () => {
         <div className="button-container-centered">
           <Button
             variant="contained"
-            className="white-button"
+            sx={{ backgroundColor: '#FFFFFF', color: '#000000' }}
             onClick={() => console.log('Get Started Now button clicked')}
           >
             <FontAwesomeIcon icon={faRightToBracket} /> &nbsp;Get Started Now
