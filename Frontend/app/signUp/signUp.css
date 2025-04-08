@@ -12,17 +12,18 @@
 
 .logo {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
-  width: 500px;
+  top: 2vh;
+  left: 2vw;
+  width: 15vw;
   height: auto;
 }
 
 .link-blue {
   color: blue;
-  text-decoration: none; /* Optional: Removes underline */
+  text-decoration: none;
+  font-size: 1.5vw;
 }
 
 .link-blue:hover {
-  text-decoration: underline; /* Optional: Adds underline on hover */
+  text-decoration: underline;
 }

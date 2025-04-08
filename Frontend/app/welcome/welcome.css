@@ -7,75 +7,71 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 4rem;
-  padding-bottom: 1rem;
+  padding: 4vh 2vw;
   position: relative;
 }
 
 .logo {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
-  width: 500px;
+  top: 2vh;
+  left: 2vw;
+  width: 15vw;
   height: auto;
 }
 
 .button-container {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 2vh;
+  right: 2vw;
   display: flex;
-  gap: 1rem;
-}
-
-.white-button {
-  background-color: white !important;
-  color: black !important;
+  gap: 1vw;
 }
 
 .h1 {
-  font-size: 4rem;
+  font-size: 3vw;
   font-weight: bold;
   color: white;
   text-align: center;
-  padding: 20px;
+  margin-bottom: 2vh;
 }
 
 .h2 {
-  font-size: 2rem;
+  font-size: 1.5vw;
   color: white;
   text-align: center;
-  padding-left: 500px;
-  padding-right: 500px;
+  margin: 0 10vw;
 }
 
 .info-box-container {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
+  gap: 5vw;
+  margin-top: 5vh;
 }
 
 .info-box {
   background-color: rgba(128, 128, 128, 0.5);
   color: white;
-  padding: 1rem;
-  border-radius: 8px;
-  width: 300px;
+  padding: 2vh;
+  border-radius: 1vw;
+  width: 20vw;
   text-align: center;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 1.2vw;
+  box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.1);
 }
 
 .box-header {
-  font-size: 2rem;
+  font-size: 2vw;
   color: white;
-  text-align: center;
-  padding-bottom: 0px;
+  margin-bottom: 1vh;
+}
+
+.icon {
+  font-size: 2.5vw;
 }
 
 .button-container-centered {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 5vh;
 }

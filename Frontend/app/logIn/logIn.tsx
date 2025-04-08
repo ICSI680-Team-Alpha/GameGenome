@@ -1,6 +1,5 @@
 import './logIn.css';
 import { TextField, Button, Box, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
 
 const LogIn = () => {
   return (
