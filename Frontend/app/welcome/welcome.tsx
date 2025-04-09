@@ -7,7 +7,7 @@ import { faHeart } from '@fortawesome/free-regular-svg-icons';
 const Welcome = () => {
   return (
     <div className="main-container">
-      <img src="/public/Images/Logo.png" alt="Logo" className="logo" />
+      <img src="/Images/Logo.png" alt="Logo" className="logo" />
       <div className="button-container">
         <Button
           variant="contained"
