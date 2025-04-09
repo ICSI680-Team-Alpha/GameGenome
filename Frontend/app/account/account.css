@@ -1,0 +1,64 @@
+.main-container {
+  background-image: url('/Images/Background.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  color: white;
+  font-size: 1.25vw;
+  font-family: sans-serif;
+  min-height: 100vh;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+}
+
+.header {
+  height: 5vh;
+}
+
+.headerLogo {
+  position: absolute;
+  top: 5vh;
+  display: flex;
+  transform: translate(-12%, -50%);
+}
+
+.accBtn {
+  position: absolute;
+  top: 5vh;
+  right: 10vw;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.8vw;
+}
+
+.logBtn {
+  position: absolute;
+  top: 5vh;
+  right: 5vw;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.8vw;
+}
+
+.accBtn:hover {
+  color: #0c37bb;
+}
+
+.backBtn:hover {
+  color: #f0f0f0;
+}
+
+.logBtn:hover {
+  color: #dc2626;
+}
+
+.main-content {
+  background: none;
+  color: white;
+  border-radius: 1vw;
+  padding: 2vw;
+  margin-top: 2vh;
+}
