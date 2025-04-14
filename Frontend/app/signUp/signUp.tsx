@@ -4,7 +4,7 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 const SignUp = () => {
   return (
     <div className="main-container">
-      <img src="/public/Images/Logo.png" alt="Logo" className="logo" />
+      <img src="/Images/Logo.png" alt="Logo" className="logo" />
       <Box
         component="form"
         className="signup-form"

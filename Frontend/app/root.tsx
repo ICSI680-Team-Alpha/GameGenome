@@ -5,8 +5,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  RouterProvider,
-  createBrowserRouter,
 } from "react-router";
 import { ThemeProvider, createTheme } from '@mui/material';
 
@@ -14,7 +12,6 @@ import type { Route } from "./+types/root";
 import "./app.css";
 
 const theme = createTheme({
-  // You can customize your theme here
   palette: {
     primary: {
       main: '#1976d2',
@@ -40,6 +37,14 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
+    <ThemeProvider theme={theme}>
+      {children}
+    </ThemeProvider>
+  );
+}
+
+export default function App() {
+  return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
@@ -48,21 +53,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <ThemeProvider theme={theme}>
-          {children}
-        </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
+        <Layout>
+          <Outlet />
+        </Layout>
       </body>
     </html>
-  );
-}
-
-export default function App() {
-  return (
-    <Layout>
-      <Outlet />
-    </Layout>
   );
 }
 
@@ -83,16 +80,28 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <Layout>
-      <main className="pt-16 p-4 container mx-auto">
-        <h1>{message}</h1>
-        <p>{details}</p>
-        {stack && (
-          <pre className="w-full p-4 overflow-x-auto">
-            <code>{stack}</code>
-          </pre>
-        )}
-      </main>
-    </Layout>
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <ScrollRestoration />
+        <Scripts />
+        <Layout>
+          <main className="pt-16 p-4 container mx-auto">
+            <h1>{message}</h1>
+            <p>{details}</p>
+            {stack && (
+              <pre className="w-full p-4 overflow-x-auto">
+                <code>{stack}</code>
+              </pre>
+            )}
+          </main>
+        </Layout>
+      </body>
+    </html>
   );
 }

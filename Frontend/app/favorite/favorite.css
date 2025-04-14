@@ -1,67 +1,75 @@
 .main-container {
-background-image: url('/Images/Background.png');
-background-size: cover;
-background-position: center;
-display: flex;
-color: white;
-font-size: 20px;
-font-family: sans-serif;
-min-height: 100vh;
-width: 100vw;
-align-items: center;
-justify-content: center;
+    background-image: url('/Images/Background.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    color: white;
+    font-size: 20px;
+    font-family: sans-serif;
+    min-height: 100vh;
+    width: 100vw;
+    align-items: center;
+    justify-content: center;
 }
-.header{
+
+.header {
     height: 50px;
 }
-.headerLogo{
+
+.headerLogo {
     position: absolute;
     top: 30px;
     display: flex;
 }
-.backBtn{
-position: absolute;
-top: 110px;
-left: 50px;
-background: none;
-cursor: pointer;
-gap: 8px;
-font-size: 18px;
-padding: 8px 12px;
-border-radius: 4px;
-transition: all 0.4s ease;
+
+.backBtn {
+    position: absolute;
+    top: 110px;
+    left: 50px;
+    background: none;
+    cursor: pointer;
+    gap: 8px;
+    font-size: 18px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.4s ease;
 }
-.accBtn{
-position: absolute;
-top: 25px;
-right: 150px;
-background: none;
-cursor: pointer;
-display: center;
+
+.accBtn {
+    position: absolute;
+    top: 25px;
+    right: 150px;
+    background: none;
+    cursor: pointer;
+    display: center;
 }
-.logBtn{
-position: absolute;
-top: 25px;
-right: 50px;
-background: none;
-cursor: pointer;
-display: center;
+
+.logBtn {
+    position: absolute;
+    top: 25px;
+    right: 50px;
+    background: none;
+    cursor: pointer;
+    display: center;
 
 }
-.accBtn:hover{
-color: #0c37bb;
+
+.accBtn:hover {
+    color: #0c37bb;
 }
-.backBtn:hover{
-color: #f0f0f0;
+
+.backBtn:hover {
+    color: #f0f0f0;
 }
+
 .logBtn:hover {
-color: #dc2626;
+    color: #dc2626;
 }
 
 .main-content {
-background: none;
-color: white;
-border-radius: 8px;
-padding: 20px;
-margin-top: 20px;
+    background: none;
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
 }
