@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './account.css';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
