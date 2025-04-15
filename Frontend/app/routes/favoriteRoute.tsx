@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import Favorites from "../favorite/favorite";
+import Favorites from "../favorite/favorites";
 
 export function meta({ }: Route.MetaArgs) {
   return [
