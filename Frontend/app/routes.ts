@@ -7,5 +7,6 @@ export default [
     route("Favorites", "routes/favoriteRoute.tsx"),
     route("Quiz", "routes/quizRoute.tsx"),
     route("Account", "routes/accountRoute.tsx"),
-    // route("Recommendations", "routes/recommendationsRoute.tsx")
+    route("Stations", "routes/stationsRoute.tsx"),
+    route("Recommendations", "routes/recommendationsRoute.tsx")
 ] satisfies RouteConfig;

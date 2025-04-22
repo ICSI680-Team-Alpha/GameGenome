@@ -1,0 +1,154 @@
+.stations-container {
+    background-image: url('/Images/Background.png');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  
+  .stations-logo {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 200px;
+    height: auto;
+    max-width: 30%;
+  }
+  
+  .stations-title {
+    color: white !important;
+    margin-bottom: 0.5rem !important;
+    text-align: center;
+    font-weight: 700 !important;
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+    margin-top: 2rem !important;
+  }
+  
+  .stations-subtitle {
+    color: #e0e0e0 !important;
+    margin-bottom: 2rem !important;
+    text-align: center;
+    font-size: clamp(1rem, 2vw, 1.2rem) !important;
+    max-width: 80%;
+  }
+  
+  .stations-actions {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    width: 100%;
+  }
+  
+  .create-station-button {
+    background-color: #4285f4 !important;
+    padding: 0.5rem 1.5rem !important;
+    font-size: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .stations-grid {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto !important;
+  }
+  
+  .station-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: rgba(60, 60, 60, 0.85) !important;
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .station-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  .station-image {
+    height: 160px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .station-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .station-image:hover .station-overlay {
+    opacity: 1;
+  }
+  
+  .play-icon {
+    font-size: 3rem;
+    color: white;
+  }
+  
+  .genre-tag {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+  }
+  
+  .station-actions {
+    display: flex;
+    justify-content: space-between !important;
+    padding: 0.5rem 1rem 1rem !important;
+  }
+  
+  .station-dialog .MuiDialog-paper {
+    background-color: #303030;
+    color: white;
+  }
+  
+  /* Make the stations responsive */
+  @media (max-width: 960px) {
+    .stations-container {
+      padding: 1.5rem;
+    }
+    
+    .stations-logo {
+      width: 150px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .stations-container {
+      padding: 1rem;
+    }
+    
+    .stations-logo {
+      width: 120px;
+    }
+    
+    .stations-title {
+      margin-top: 4rem !important;
+    }
+    
+    .station-image {
+      height: 140px;
+    }
+  }

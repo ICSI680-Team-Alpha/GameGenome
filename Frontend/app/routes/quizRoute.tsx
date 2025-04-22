@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router';
 import { Button, Typography, Box } from '@mui/material';
 import '../quiz/quiz.css'; 
 
@@ -17,6 +17,11 @@ interface SelectionsState {
 }
 
 export default function QuizRoute() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isForStationCreation = searchParams.get('purpose') === 'station';
+  const stationName = searchParams.get('name') || 'New Station';
+  
   // (welcome page is step 0)
   const [step, setStep] = useState<number>(0);
   const [selections, setSelections] = useState<SelectionsState>({
@@ -99,30 +104,58 @@ export default function QuizRoute() {
     setStep(prev => prev - 1);
   };
 
+  // Function to handle quiz completion
+  const handleComplete = (): void => {
+    // In a real app, you'd save this data to your backend
+    console.log('Quiz completed with selections:', selections);
+    
+    // If this quiz is for station creation, navigate to the new station's recommendations
+    if (isForStationCreation) {
+      // Simulate creating a new station ID
+      const newStationId = Date.now().toString();
+      navigate(`/Recommendations?stationId=${newStationId}&new=true&name=${encodeURIComponent(stationName)}`);
+    } else {
+      // Regular quiz completion - go to recommendations
+      navigate('/Recommendations');
+    }
+  };
+
   // Quiz Welcome - Step 0
-  const renderWelcomeQuiz = () => (
-    <>
-      <Typography variant="h4" component="h1" className="quiz-title">
-        Welcome to Game Genome
-      </Typography>
+  const renderWelcomeQuiz = () => {
+    // Different welcome message based on purpose
+    const title = isForStationCreation 
+      ? `Create Your "${stationName}" Station` 
+      : "Welcome to Game Genome";
       
-      <Typography variant="body1" className="quiz-subtitle">
-        Let's find your perfect games! First, we'll ask you a few questions
-        to understand your gaming preferences better.
-      </Typography>
+    const subtitle = isForStationCreation
+      ? "Let's build a station tailored to your preferences. Answer a few questions to get started."
+      : "Let's find your perfect games! First, we'll ask you a few questions to understand your gaming preferences better.";
       
-      <Box mt={4} textAlign="center">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleNext}
-          className="action-button"
-        >
-          Start Quiz
-        </Button>
-      </Box>
-    </>
-  );
+    const buttonText = isForStationCreation ? "Start Building Station" : "Start Quiz";
+    
+    return (
+      <>
+        <Typography variant="h4" component="h1" className="quiz-title">
+          {title}
+        </Typography>
+        
+        <Typography variant="body1" className="quiz-subtitle">
+          {subtitle}
+        </Typography>
+        
+        <Box mt={4} textAlign="center">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleNext}
+            className="action-button"
+          >
+            {buttonText}
+          </Button>
+        </Box>
+      </>
+    );
+  };
 
   // Game Selection - Step 1
   const renderGameSelection = () => (
@@ -176,7 +209,7 @@ export default function QuizRoute() {
   const renderPlayStyleSelection = () => (
     <>
       <Typography variant="h4" component="h1" className="quiz-title">
-        Do You Preferer Playing:
+        Do You Prefer Playing:
       </Typography>
       <Typography variant="body1" className="quiz-subtitle">
         (Select at least 1)
@@ -221,28 +254,38 @@ export default function QuizRoute() {
   );
 
   // Completion page (after the 4 steps)
-  const renderCompletion = () => (
-    <>
-      <Typography variant="h4" component="h1" className="quiz-title">
-        All Set!
-      </Typography>
-      <Typography variant="body1" className="quiz-subtitle">
-        We've analyzed your preferences and are ready to show 
-        some amazing game recommendations
-      </Typography>
-      <Box mt={4} textAlign="center">
-        <Link to="/Recommendations" style={{ textDecoration: 'none' }}>
+  const renderCompletion = () => {
+    const title = isForStationCreation 
+      ? `"${stationName}" Station Created!` 
+      : "All Set!";
+      
+    const subtitle = isForStationCreation
+      ? `We've analyzed your preferences and created your "${stationName}" station with personalized game recommendations.`
+      : "We've analyzed your preferences and are ready to show some amazing game recommendations";
+      
+    const buttonText = isForStationCreation ? "View Your New Station" : "See Recommendations";
+    
+    return (
+      <>
+        <Typography variant="h4" component="h1" className="quiz-title">
+          {title}
+        </Typography>
+        <Typography variant="body1" className="quiz-subtitle">
+          {subtitle}
+        </Typography>
+        <Box mt={4} textAlign="center">
           <Button
             variant="contained"
             color="primary"
             className="action-button"
+            onClick={handleComplete}
           >
-            See Recommendations
+            {buttonText}
           </Button>
-        </Link>
-      </Box>
-    </>
-  );
+        </Box>
+      </>
+    );
+  };
 
   const renderStepContent = () => {
     switch (step) {
