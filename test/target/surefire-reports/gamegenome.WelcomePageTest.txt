@@ -1,16 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: gamegenome.WelcomePageTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 6.307 s <<< FAILURE! - in gamegenome.WelcomePageTest
-testWelcomePageElements(gamegenome.WelcomePageTest)  Time elapsed: 6.306 s  <<< ERROR!
-org.openqa.selenium.NoSuchElementException: 
-Unable to locate element: //button[contains(text(), 'Log in')]
-For documentation on this error, please visit: https://selenium.dev/exceptions/#no_such_element
-Build info: version: '4.9.0', revision: 'd7057100a6'
-System info: os.name: 'Windows 10', os.arch: 'amd64', os.version: '10.0', java.version: '17.0.9'
-Driver info: org.openqa.selenium.firefox.FirefoxDriver
-Command: [9de37e0a-dfa8-49c7-8440-4daeeb8e3aee, findElement {using=xpath, value=//button[contains(text(), 'Log in')]}]
-Capabilities {acceptInsecureCerts: true, browserName: firefox, browserVersion: 137.0.2, moz:accessibilityChecks: false, moz:buildID: 20250414091429, moz:geckodriverVersion: 0.36.0, moz:headless: false, moz:platformVersion: 10.0, moz:processID: 51624, moz:profile: C:\Users\alexb\AppData\Loca..., moz:shutdownTimeout: 60000, moz:webdriverClick: true, moz:windowless: false, pageLoadStrategy: normal, platformName: WINDOWS, proxy: Proxy(), setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, userAgent: Mozilla/5.0 (Windows NT 10....}
-Session ID: 9de37e0a-dfa8-49c7-8440-4daeeb8e3aee
-	at gamegenome.WelcomePageTest.testWelcomePageElements(WelcomePageTest.java:39)
-
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.134 s - in gamegenome.WelcomePageTest

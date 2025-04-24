@@ -21,7 +21,7 @@ public class WelcomePageTest {
         // WebDriverManager will automatically download and configure the driver
         WebDriverManager.firefoxdriver().setup();
         driver = new FirefoxDriver();
-        driver.get("http://localhost:5173/"); // Replace with your local server URL
+        driver.get("http://localhost:5173/");
     }
 
     @Test
