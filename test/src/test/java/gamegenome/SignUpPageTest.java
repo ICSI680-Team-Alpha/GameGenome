@@ -75,10 +75,6 @@ public class SignUpPageTest {
         // Submit the form
         WebElement signUpButton = driver.findElement(By.xpath("//button[contains(text(), 'Sign Up')]"));
         signUpButton.click();
-        
-        // Here you would add assertions to verify successful form submission
-        // For example: check for success message or redirection
-        // This depends on your application's behavior after form submission
     }
 
     @After

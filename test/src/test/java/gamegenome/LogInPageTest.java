@@ -61,10 +61,6 @@ public class LogInPageTest {
         // Submit the form
         WebElement logInButton = driver.findElement(By.xpath("//button[contains(text(), 'Log In')]"));
         logInButton.click();
-        
-        // Here you would add assertions to verify successful login
-        // For example: check for success message or redirection to dashboard
-        // This depends on your application's behavior after login
     }
 
     @After
