@@ -159,7 +159,11 @@ const Stations = () => {
               <Card className="station-card">
                 <div 
                   className="station-image"
-                  style={{ backgroundImage: `url(${station.content?.mediaUrls?.[0] || '/Images/default-station.jpg'})` }}
+                  style={{ 
+                    backgroundImage: `url(${station.content?.mediaUrls?.[0] || '/Images/Background.png'})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}
                   onClick={() => handleStationClick(station._id || '')}
                 >
                   <div className="station-overlay">

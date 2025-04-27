@@ -7,6 +7,8 @@ import { gameRoutes } from './routes/gameRoutes';
 import { feedbackRoutes } from './routes/feedbackRoutes';
 import { quizRoutes } from './routes/quizRoutes';
 import { recommendationRoutes } from './routes/recommendationRoutes';
+import { steamMediaRoutes } from './routes/steamMediaRoutes';
+import { userRoutes } from './routes/userRoutes';
 import { errorHandler } from './middleware/errorHandler';
 import { config } from './config';
 import { connectDB } from './db/mongoose';
@@ -31,6 +33,8 @@ app.use('/api/games', gameRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/recommendations', recommendationRoutes);
+app.use('/api/media', steamMediaRoutes);
+app.use('/api/users', userRoutes);
 
 // Error handling
 app.use(errorHandler);

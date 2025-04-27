@@ -93,6 +93,16 @@ export interface Recommendation {
   timestamp?: Date;
 }
 
+// Media interfaces
+export interface SteamMedia {
+  _id?: string;
+  AppID: number;
+  HeaderImage: string;
+  Screenshots: string;
+  Background: string;
+  Movies: string | null;
+}
+
 // API functions
 export const getSteamGames = async (): Promise<Game[]> => {
   const response = await axios.get(`${API_URL}/games`);
@@ -178,6 +188,31 @@ export const createRecommendations = async (userId: string, stationId: string): 
     return response.data.data;
   } catch (error) {
     console.error('Frontend: Error creating recommendations:', error);
+    throw error;
+  }
+};
+
+// Media API functions
+export const getMediaByAppId = async (appId: number): Promise<SteamMedia> => {
+  try {
+    console.log('Frontend: Getting media for AppID:', appId);
+    const response = await axios.get(`${API_URL}/media/${appId}`);
+    console.log('Frontend: Media received:', response.data);
+    return response.data.data;
+  } catch (error) {
+    console.error('Frontend: Error getting media:', error);
+    throw error;
+  }
+};
+
+export const getAllMedia = async (): Promise<SteamMedia[]> => {
+  try {
+    console.log('Frontend: Getting all media');
+    const response = await axios.get(`${API_URL}/media`);
+    console.log('Frontend: All media received:', response.data);
+    return response.data.data;
+  } catch (error) {
+    console.error('Frontend: Error getting all media:', error);
     throw error;
   }
 }; 
