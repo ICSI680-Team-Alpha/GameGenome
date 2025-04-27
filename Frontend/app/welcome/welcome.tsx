@@ -3,8 +3,23 @@ import './welcome.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightToBracket, faClipboard, faCircleCheck, faBullseye } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 const Welcome = () => {
+  const navigate = useNavigate();
+
+  const handleSignUp = () => {
+    navigate('/Signup');
+  };
+
+  const handleLogin = () => {
+    navigate('/Login');
+  };
+
+  const handleGetStarted = () => {
+    navigate('/Signup');
+  };
+
   return (
       <div className="main-container">
       <img src="/Images/LOGO.png" alt="Logo" className="logo" />
@@ -12,14 +27,14 @@ const Welcome = () => {
         <Button
           variant="contained"
           sx={{ backgroundColor: '#FFFFFF', color: '#000000' }}
-          onClick={() => console.log('Sign Up button clicked')}
+          onClick={handleSignUp}
         >
           <FontAwesomeIcon icon={faRightToBracket} /> &nbsp;Sign Up
         </Button>
         <Button
           variant="contained"
           sx={{ backgroundColor: '#FFFFFF', color: '#000000' }}
-          onClick={() => console.log('Log in button clicked')}
+          onClick={handleLogin}
         >
           <FontAwesomeIcon icon={faClipboard} /> &nbsp;Log in
         </Button>
@@ -53,7 +68,7 @@ const Welcome = () => {
           <Button
             variant="contained"
             sx={{ backgroundColor: '#FFFFFF', color: '#000000' }}
-            onClick={() => console.log('Get Started Now button clicked')}
+            onClick={handleGetStarted}
           >
             <FontAwesomeIcon icon={faRightToBracket} /> &nbsp;Get Started Now
           </Button>

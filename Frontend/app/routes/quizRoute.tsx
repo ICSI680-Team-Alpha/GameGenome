@@ -111,8 +111,9 @@ export default function QuizRoute() {
     
     // If this quiz is for station creation, navigate to the new station's recommendations
     if (isForStationCreation) {
-      // Simulate creating a new station ID
-      const newStationId = Date.now().toString();
+      // Use a more deterministic approach for station ID generation
+      // This will be replaced by the backend-generated ID in a real app
+      const newStationId = `station-${stationName.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`;
       navigate(`/Recommendations?stationId=${newStationId}&new=true&name=${encodeURIComponent(stationName)}`);
     } else {
       // Regular quiz completion - go to recommendations

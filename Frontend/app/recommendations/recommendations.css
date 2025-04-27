@@ -1,5 +1,5 @@
 .recommendations-container {
-    background-image: url('/Images/Background.png');
+    background-image: url('../public/Images/Background.png');
     background-size: cover;
     background-position: center;
     min-height: 100vh;

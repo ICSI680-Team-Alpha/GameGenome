@@ -7,16 +7,18 @@ const SignUp = () => {
       <img src="/Images/LOGO.png" alt="Logo" className="logo" />
       <Box
         component="form"
-        className="signup-form"
         sx={{
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
           padding: 3,
           borderRadius: 2,
-          boxShadow: 3,
-          width: 300,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+          width: 350,
+          border: '1px solid rgba(255, 255, 255, 0.5)',
+          backdropFilter: 'blur(10px)',
+          zIndex: 10,
         }}
       >
         <Typography variant="h5" component="h2" textAlign="center" gutterBottom>

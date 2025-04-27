@@ -12,11 +12,13 @@ const LogIn = () => {
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
           padding: 3,
           borderRadius: 2,
-          boxShadow: 3,
-          width: 300,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+          width: 350,
+          border: '1px solid rgba(255, 255, 255, 0.5)',
+          backdropFilter: 'blur(10px)',
         }}
       >
         <Typography variant="h5" component="h2" textAlign="center" gutterBottom>

@@ -13,5 +13,11 @@
     "@types/react-dom": "^19.1.2",
     "@types/react-router-dom": "^5.3.3",
     "vite": "^6.3.2"
+  },
+  "dependencies": {
+    "@react-router/dev": "^7.5.2",
+    "@types/axios": "^0.14.4",
+    "axios": "^1.9.0",
+    "react-router-dom": "^7.5.2"
   }
 }

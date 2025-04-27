@@ -2,8 +2,8 @@
   background-image: url('/Images/Background.png');
   background-size: cover;
   background-position: center;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,16 +12,17 @@
 
 .logo {
   position: absolute;
-  top: 2vh;
-  left: 2vw;
-  width: 15vw;
+  top: 20px;
+  left: 20px;
+  width: 200px;
   height: auto;
+  max-width: 15%;
 }
 
 .link-blue {
   color: blue;
   text-decoration: none;
-  font-size: 1.5vw;
+  font-size: 16px;
 }
 
 .link-blue:hover {

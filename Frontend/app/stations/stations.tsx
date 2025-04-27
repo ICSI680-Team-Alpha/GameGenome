@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Typography, 
   Button, 
@@ -12,7 +12,9 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  IconButton
+  IconButton,
+  CircularProgress,
+  Alert
 } from '@mui/material';
 import { useNavigate } from 'react-router';
 import './stations.css';
@@ -25,41 +27,37 @@ import {
   faEdit
 } from '@fortawesome/free-solid-svg-icons';
 
-interface Station {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-  genres: string[];
-  createdAt: Date;
-}
+import { getStations, deleteStation, updateStation, Station } from '../services/api';
 
 const Stations = () => {
   const navigate = useNavigate();
-  const [stations, setStations] = useState<Station[]>([
-    {
-      id: '1',
-      name: 'Action Adventure',
-      image: '/Images/action-adventure.jpg',
-      description: 'Games with exploration and combat',
-      genres: ['Action', 'Adventure', 'RPG'],
-      createdAt: new Date('2025-04-15')
-    },
-    {
-      id: '2',
-      name: 'Competitive FPS',
-      image: '/Images/fps.jpg',
-      description: 'Fast-paced multiplayer shooters',
-      genres: ['Shooter', 'Action', 'Multiplayer'],
-      createdAt: new Date('2025-04-10')
-    }
-  ]);
+  const [stations, setStations] = useState<Station[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [currentStationId, setCurrentStationId] = useState<string | null>(null);
   const [newStationName, setNewStationName] = useState('');
+  
+  useEffect(() => {
+    fetchStations();
+  }, []);
+  
+  const fetchStations = async () => {
+    try {
+      setLoading(true);
+      const data = await getStations();
+      setStations(data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching stations:', err);
+      setError('Failed to load stations. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
   
   const handleCreateStation = () => {
     navigate(`/Quiz?purpose=station&name=${encodeURIComponent(newStationName)}`);
@@ -77,7 +75,7 @@ const Stations = () => {
   };
 
   const handleEditClick = (stationId: string) => {
-    const station = stations.find(s => s.id === stationId);
+    const station = stations.find(s => s._id === stationId);
     if (station) {
       setNewStationName(station.name);
       setCurrentStationId(stationId);
@@ -85,24 +83,36 @@ const Stations = () => {
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (currentStationId) {
-      setStations(stations.filter(station => station.id !== currentStationId));
-      setDeleteDialogOpen(false);
-      setCurrentStationId(null);
+      try {
+        await deleteStation(currentStationId);
+        setStations(stations.filter(station => station._id !== currentStationId));
+        setDeleteDialogOpen(false);
+        setCurrentStationId(null);
+      } catch (err) {
+        console.error('Error deleting station:', err);
+        setError('Failed to delete station. Please try again later.');
+      }
     }
   };
 
-  const confirmEdit = () => {
+  const confirmEdit = async () => {
     if (currentStationId && newStationName.trim()) {
-      setStations(stations.map(station => 
-        station.id === currentStationId 
-          ? { ...station, name: newStationName.trim() } 
-          : station
-      ));
-      setEditDialogOpen(false);
-      setCurrentStationId(null);
-      setNewStationName('');
+      try {
+        const updatedStation = await updateStation(currentStationId, { name: newStationName.trim() });
+        setStations(stations.map(station => 
+          station._id === currentStationId 
+            ? updatedStation 
+            : station
+        ));
+        setEditDialogOpen(false);
+        setCurrentStationId(null);
+        setNewStationName('');
+      } catch (err) {
+        console.error('Error updating station:', err);
+        setError('Failed to update station. Please try again later.');
+      }
     }
   };
 
@@ -130,61 +140,75 @@ const Stations = () => {
         </Button>
       </Box>
       
-      <Grid container spacing={3} className="stations-grid">
-        {stations.map((station) => (
-          <Grid key={station.id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
-            <Card className="station-card">
-              <div 
-                className="station-image"
-                style={{ backgroundImage: `url(${station.image})` }}
-                onClick={() => handleStationClick(station.id)}
-              >
-                <div className="station-overlay">
-                  <FontAwesomeIcon icon={faGamepad} className="play-icon" />
-                </div>
-              </div>
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  {station.name}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {station.description}
-                </Typography>
-                <Box mt={1} display="flex" flexWrap="wrap" gap={0.5}>
-                  {station.genres.map((genre, index) => (
-                    <span key={index} className="genre-tag">
-                      {genre}
-                    </span>
-                  ))}
-                </Box>
-              </CardContent>
-              <CardActions disableSpacing className="station-actions">
-                <Button 
-                  size="small" 
-                  color="primary"
-                  onClick={() => handleStationClick(station.id)}
+      {loading ? (
+        <Box display="flex" justifyContent="center" my={4}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Alert severity="error" sx={{ my: 2 }}>
+          {error}
+        </Alert>
+      ) : stations.length === 0 ? (
+        <Alert severity="info" sx={{ my: 2 }}>
+          You haven't created any stations yet. Create your first station to get started!
+        </Alert>
+      ) : (
+        <Grid container spacing={3} className="stations-grid">
+          {stations.map((station) => (
+            <Grid key={station._id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
+              <Card className="station-card">
+                <div 
+                  className="station-image"
+                  style={{ backgroundImage: `url(${station.content?.mediaUrls?.[0] || '/Images/default-station.jpg'})` }}
+                  onClick={() => handleStationClick(station._id || '')}
                 >
-                  View Games
-                </Button>
-                <Box>
-                  <IconButton 
-                    aria-label="edit"
-                    onClick={() => handleEditClick(station.id)}
+                  <div className="station-overlay">
+                    <FontAwesomeIcon icon={faGamepad} className="play-icon" />
+                  </div>
+                </div>
+                <CardContent>
+                  <Typography variant="h5" component="h2">
+                    {station.name}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {station.description || 'No description available'}
+                  </Typography>
+                  <Box mt={1} display="flex" flexWrap="wrap" gap={0.5}>
+                    {station.type && (
+                      <span className="genre-tag">
+                        {station.type}
+                      </span>
+                    )}
+                  </Box>
+                </CardContent>
+                <CardActions disableSpacing className="station-actions">
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    onClick={() => handleStationClick(station._id || '')}
                   >
-                    <FontAwesomeIcon icon={faEdit} />
-                  </IconButton>
-                  <IconButton 
-                    aria-label="delete"
-                    onClick={() => handleDeleteClick(station.id)}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </IconButton>
-                </Box>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                    View Games
+                  </Button>
+                  <Box>
+                    <IconButton 
+                      aria-label="edit"
+                      onClick={() => handleEditClick(station._id || '')}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </IconButton>
+                    <IconButton 
+                      aria-label="delete"
+                      onClick={() => handleDeleteClick(station._id || '')}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </IconButton>
+                  </Box>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
       
       {/* Create Station Dialog */}
       <Dialog 
