@@ -8,9 +8,7 @@ const express_1 = __importDefault(require("express"));
 const quizController_1 = require("../controllers/quizController");
 const router = express_1.default.Router();
 // Get all quizzes
-router.get('/', quizController_1.getAllQuizzes);
-// Get quiz by ID
-router.get('/:id', quizController_1.getQuizById);
+router.get('/', quizController_1.getQuizzes);
 // Save quiz response
 router.post('/responses', quizController_1.saveQuizResponse);
 exports.quizRoutes = router;

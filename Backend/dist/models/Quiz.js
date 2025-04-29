@@ -6,34 +6,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Quiz = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const quizSchema = new mongoose_1.default.Schema({
-    quizID: { type: Number, required: true, unique: true },
-    title: { type: String, required: true },
-    description: { type: String },
-    questions: [{
-            questionID: { type: Number, required: true },
-            text: { type: String, required: true },
-            type: {
-                type: String,
-                enum: ['multiple-choice', 'true-false', 'short-answer'],
-                default: 'multiple-choice'
-            },
-            options: [{
-                    text: { type: String },
-                    isCorrect: { type: Boolean }
-                }],
-            correctAnswer: { type: String },
-            points: { type: Number, default: 1 }
-        }],
-    timeLimit: { type: Number }, // in minutes
-    passingScore: { type: Number, default: 70 }, // percentage
-    difficulty: {
+    quizID: { type: Number, required: true },
+    quizText: { type: String, required: true },
+    quizType: {
         type: String,
-        enum: ['easy', 'medium', 'hard'],
-        default: 'medium'
+        required: true,
+        enum: ['multiSelect']
     },
-    category: { type: String },
-    tags: [{ type: String }],
-    isActive: { type: Boolean, default: true },
-    timestamp: { type: Date, default: Date.now }
+    options: [{
+            id: { type: String, required: true },
+            text: { type: String, required: true }
+        }],
+    maxSelections: { type: Number, required: true, default: 3 },
+    required: { type: Boolean, default: true }
+}, {
+    collection: 'quiz'
 });
-exports.Quiz = mongoose_1.default.model('quizzes', quizSchema);
+// Add indexes
+quizSchema.index({ quizID: 1 }, { unique: true });
+exports.Quiz = mongoose_1.default.model('quiz', quizSchema);

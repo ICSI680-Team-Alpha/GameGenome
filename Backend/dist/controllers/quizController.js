@@ -1,52 +1,85 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveQuizResponse = exports.getQuizById = exports.getAllQuizzes = void 0;
+exports.getQuizResponsesByUser = exports.getQuizResponseByStation = exports.saveQuizResponse = exports.getQuizzes = void 0;
 const Quiz_1 = require("../models/Quiz");
-const UserQuizResponse_1 = require("../models/UserQuizResponse");
-const errorHandler_1 = require("../middleware/errorHandler");
-const getAllQuizzes = async (req, res, next) => {
-    try {
-        const quizzes = await Quiz_1.Quiz.find();
-        res.status(200).json({
-            status: 'success',
-            results: quizzes.length,
-            data: quizzes
-        });
-    }
-    catch (error) {
-        next(error);
-    }
+const QuizResponse_1 = require("../models/QuizResponse");
+const appError_1 = require("../utils/appError");
+const catchAsync_1 = require("../utils/catchAsync");
+const isArrayCategory = (category) => {
+    return ['genre', 'platform', 'gameplay', 'story', 'graphics'].includes(category);
 };
-exports.getAllQuizzes = getAllQuizzes;
-const getQuizById = async (req, res, next) => {
-    try {
-        const quiz = await Quiz_1.Quiz.findOne({ quizID: req.params.id });
-        if (!quiz) {
-            return next(new errorHandler_1.AppError('No quiz found with that ID', 404));
+// Get all active quizzes
+exports.getQuizzes = (0, catchAsync_1.catchAsync)(async (req, res) => {
+    const quizzes = await Quiz_1.Quiz.find();
+    res.status(200).json({
+        status: 'success',
+        data: quizzes
+    });
+});
+// Save quiz response
+exports.saveQuizResponse = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
+    const { userId, stationId, responses } = req.body;
+    if (!userId || !stationId || !responses || !Array.isArray(responses)) {
+        return next(new appError_1.AppError('Invalid quiz response data', 400));
+    }
+    // Initialize preferences object
+    const preferences = {
+        genre: [],
+        platform: [],
+        gameplay: []
+    };
+    // Process each question response and categorize selections
+    responses.forEach(response => {
+        if (response.category && response.selections) {
+            switch (response.category.toLowerCase()) {
+                case 'genre':
+                    preferences.genre.push(...response.selections);
+                    break;
+                case 'platform':
+                    preferences.platform.push(...response.selections);
+                    break;
+                case 'gameplay':
+                    preferences.gameplay.push(...response.selections);
+                    break;
+                default:
+                    // Skip other categories
+                    break;
+            }
         }
-        res.status(200).json({
-            status: 'success',
-            data: quiz
-        });
+    });
+    // Create new quiz response with processed preferences
+    const quizResponse = await QuizResponse_1.QuizResponse.create({
+        userId,
+        stationId,
+        responses,
+        preferences
+    });
+    res.status(201).json({
+        status: 'success',
+        data: quizResponse
+    });
+});
+// Get quiz response by station ID
+exports.getQuizResponseByStation = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
+    const { stationId } = req.params;
+    if (!stationId) {
+        return next(new appError_1.AppError('Station ID is required', 400));
     }
-    catch (error) {
-        next(error);
+    const responses = await QuizResponse_1.QuizResponse.find({ stationId }).sort('-createdAt');
+    res.status(200).json({
+        status: 'success',
+        data: responses
+    });
+});
+// Get quiz response by user ID
+exports.getQuizResponsesByUser = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
+    const { userId } = req.params;
+    if (!userId) {
+        return next(new appError_1.AppError('User ID is required', 400));
     }
-};
-exports.getQuizById = getQuizById;
-const saveQuizResponse = async (req, res, next) => {
-    try {
-        if (!req.body.timestamp) {
-            req.body.timestamp = new Date();
-        }
-        const response = await UserQuizResponse_1.UserQuizResponse.create(req.body);
-        res.status(201).json({
-            status: 'success',
-            data: response
-        });
-    }
-    catch (error) {
-        next(error);
-    }
-};
-exports.saveQuizResponse = saveQuizResponse;
+    const responses = await QuizResponse_1.QuizResponse.find({ userId }).sort('-createdAt');
+    res.status(200).json({
+        status: 'success',
+        data: responses
+    });
+});

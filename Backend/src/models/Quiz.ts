@@ -1,35 +1,32 @@
 import mongoose from 'mongoose';
 
-const quizSchema = new mongoose.Schema({
-  quizID: { type: Number, required: true, unique: true },
-  title: { type: String, required: true },
-  description: { type: String },
-  questions: [{
-    questionID: { type: Number, required: true },
-    text: { type: String, required: true },
-    type: { 
-      type: String, 
-      enum: ['multiple-choice', 'true-false', 'short-answer'],
-      default: 'multiple-choice'
-    },
-    options: [{ 
-      text: { type: String },
-      isCorrect: { type: Boolean }
-    }],
-    correctAnswer: { type: String },
-    points: { type: Number, default: 1 }
-  }],
-  timeLimit: { type: Number }, // in minutes
-  passingScore: { type: Number, default: 70 }, // percentage
-  difficulty: { 
-    type: String, 
-    enum: ['easy', 'medium', 'hard'],
-    default: 'medium'
-  },
-  category: { type: String },
-  tags: [{ type: String }],
-  isActive: { type: Boolean, default: true },
-  timestamp: { type: Date, default: Date.now }
+const optionSchema = new mongoose.Schema({
+  id: { type: String, required: true },
+  text: { type: String, required: true }
 });
 
-export const Quiz = mongoose.model('quizzes', quizSchema); 
+const quizSchema = new mongoose.Schema({
+  quizID: { type: Number, required: true, unique: true },
+  quizText: { type: String, required: true },
+  quizType: { 
+    type: String, 
+    required: true,
+    enum: ['multiSelect']
+  },
+  options: [optionSchema],
+  maxSelections: { type: Number, required: true, default: 3 },
+  required: { type: Boolean, default: true },
+  category: {
+    type: String,
+    required: true,
+    enum: ['genre', 'platform', 'gameplay', 'difficulty']
+  }
+}, {
+  timestamps: true,
+  collection: 'quiz'
+});
+
+// Add indexes
+quizSchema.index({ quizID: 1 }, { unique: true });
+
+export const Quiz = mongoose.model('quiz', quizSchema); 
