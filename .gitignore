@@ -42,3 +42,5 @@ next-env.d.ts
 
 .idea
 /Backend/node_modules
+/Backend/dist
+/Backend/dist/*
