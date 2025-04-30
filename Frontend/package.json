@@ -8,7 +8,7 @@
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
   },
-  "overrides":{
+  "overrides": {
     "react": "$react",
     "tailwindcss": "$tailwindcss",
     "react-dom": "$react-dom",
@@ -16,7 +16,6 @@
     "@emotion/styled": "$@emotion/styled",
     "@fortawesome/fontawesome-svg-core": "$@fortawesome/fontawesome-svg-core",
     "vite": "$vite"
-
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
