@@ -1,7 +1,7 @@
 import React from 'react'
 import './gamePreview.css'
 
-const games = [
+export const games = [
     {
         id: 1,
         title: 'Spiderman2',
