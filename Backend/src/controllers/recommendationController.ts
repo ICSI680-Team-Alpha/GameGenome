@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Recommendation } from '../models/Recommendation';
 import { Game } from '../models/Game';
-import { UserQuizResponse } from '../models/UserQuizResponse';
+import { QuizResponse } from '../models/QuizResponse';
 import { AppError } from '../middleware/errorHandler';
 
 // Get recommendations for a user and station
@@ -26,9 +26,9 @@ export const getRecommendations = async (
     // If we don't have recommendations, generate them
     if (!recommendations) {
       // Get the user's quiz responses
-      const quizResponses = await UserQuizResponse.find({
-        UserID: userId,
-        StationID: stationId
+      const quizResponses = await QuizResponse.find({
+        userID: userId,
+        stationID: stationId
       });
       
       if (!quizResponses || quizResponses.length === 0) {
@@ -36,7 +36,6 @@ export const getRecommendations = async (
       }
       
       // sample games as recommendations
-    
       const sampleGames = await Game.find().limit(5);
       
       recommendations = await Recommendation.create({

@@ -1,16 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
-import { Button, Typography, Box } from '@mui/material';
+import { Button, Typography, Box, CircularProgress } from '@mui/material';
 import '../quiz/quiz.css'; 
+import { getQuizzes, Quiz as APIQuiz, QuizOption as APIQuizOption } from '../services/api';
+import { createStation, saveQuizResponse } from '../services/api';
 
-interface GameOption {
-  id: number;
-  name: string;
-  image: string;
-}
+interface GameOption extends APIQuizOption {}
+interface Quiz extends APIQuiz {}
 
 interface SelectionsState {
-  games: number[];
+  games: string[];
   genres: string[];
   playStyles: string[];
   goals: string[];
@@ -30,16 +29,27 @@ export default function QuizRoute() {
     playStyles: [],
     goals: []
   });
+  const [loading, setLoading] = useState(true);
+  const [gameQuiz, setGameQuiz] = useState<Quiz | null>(null);
 
-  // Sample game data 
-  const gameOptions: GameOption[] = [
-    { id: 1, name: 'Apex Legends', image: '/Images/batman.jpg' },
-    { id: 2, name: 'Fortnite', image: '/Images/god-of-war-ragnarok.jpeg' },
-    { id: 3, name: 'Apex Legends', image: '/Images/spiderman2.jpg' },
-    { id: 4, name: 'Fortnite', image: '/Images/batman.jpg' },
-    { id: 5, name: 'Apex Legends', image: '/Images/god-of-war-ragnarok.jpeg' },
-    { id: 6, name: 'Fortnite', image: '/Images/spiderman2.jpg' }
-  ];
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      try {
+        setLoading(true);
+        const quizzes = await getQuizzes();
+        const firstQuiz = quizzes.find(quiz => quiz.quizID === 1);
+        if (firstQuiz) {
+          setGameQuiz(firstQuiz);
+        }
+      } catch (error) {
+        console.error('Error fetching quiz data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuizData();
+  }, []);
 
   // Sample genre data
   const genreOptions: string[] = [
@@ -60,7 +70,7 @@ export default function QuizRoute() {
     'Story and immersion', 'Social interaction'
   ];
 
-  const handleGameSelection = (gameId: number): void => {
+  const handleGameSelection = (gameId: string): void => {
     setSelections(prev => {
       const newGames = prev.games.includes(gameId)
         ? prev.games.filter(id => id !== gameId)
@@ -105,19 +115,92 @@ export default function QuizRoute() {
   };
 
   // Function to handle quiz completion
-  const handleComplete = (): void => {
-    // In a real app, you'd save this data to your backend
-    console.log('Quiz completed with selections:', selections);
-    
-    // If this quiz is for station creation, navigate to the new station's recommendations
-    if (isForStationCreation) {
-      // Use a more deterministic approach for station ID generation
-      // This will be replaced by the backend-generated ID in a real app
-      const newStationId = `station-${stationName.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`;
-      navigate(`/Recommendations?stationId=${newStationId}&new=true&name=${encodeURIComponent(stationName)}`);
-    } else {
-      // Regular quiz completion - go to recommendations
-      navigate('/Recommendations');
+  const handleComplete = async (): Promise<void> => {
+    try {
+      console.log('=== Starting Quiz Completion ===');
+      console.log('Current selections:', selections);
+
+      // Validate selection counts
+      if (selections.games.length < 3 || selections.games.length > 6) {
+        throw new Error('Please select between 3 and 6 games');
+      }
+      if (selections.genres.length < 4) {
+        throw new Error('Please select at least 4 genres');
+      }
+      if (selections.playStyles.length < 1) {
+        throw new Error('Please select at least 1 play style');
+      }
+      if (selections.goals.length < 1) {
+        throw new Error('Please select at least 1 goal');
+      }
+
+      // Create the station first
+      console.log('Creating station...');
+      const station = await createStation({
+        stationID: Date.now(),
+        name: stationName,
+        type: 'quiz',
+        isActive: true
+      });
+      console.log('Station created:', station);
+
+      // Format all quiz responses
+      const quizResponses = {
+        userID: "1",
+        stationID: station.stationID.toString(),
+        timestamp: new Date(),
+        responses: [
+          {
+            quizID: 1,
+            questionText: gameQuiz?.quizText || 'Select games that interest you',
+            questionType: 'multiSelect',
+            selection: selections.games,
+            selectedGames: gameQuiz?.options
+              .filter(option => selections.games.includes(option.id))
+              .map(option => ({
+                id: option.id,
+                name: option.text
+              })) ?? []
+          },
+          {
+            quizID: 2,
+            questionText: 'Select Your Preferred Genres',
+            questionType: 'multiSelect',
+            selection: selections.genres,
+            selectedGames: []
+          },
+          {
+            quizID: 3,
+            questionText: 'Do You Prefer Playing:',
+            questionType: 'multiSelect',
+            selection: selections.playStyles,
+            selectedGames: []
+          },
+          {
+            quizID: 4,
+            questionText: 'What Is Your Primary Gaming Goal?',
+            questionType: 'multiSelect',
+            selection: selections.goals,
+            selectedGames: []
+          }
+        ]
+      };
+
+      console.log('Sending quiz responses:', JSON.stringify(quizResponses, null, 2));
+
+      // Save quiz responses
+      const savedResponse = await saveQuizResponse(quizResponses);
+      console.log('Quiz responses saved:', savedResponse);
+
+      // Navigate to recommendations
+      if (isForStationCreation) {
+        navigate(`/Recommendations?stationId=${station._id}&new=true&name=${encodeURIComponent(stationName)}`);
+      } else {
+        navigate('/Recommendations');
+      }
+    } catch (error) {
+      console.error('Error completing quiz:', error);
+      // TODO: Show error message to user
     }
   };
 
@@ -159,28 +242,46 @@ export default function QuizRoute() {
   };
 
   // Game Selection - Step 1
-  const renderGameSelection = () => (
-    <>
-      <Typography variant="h4" component="h1" className="quiz-title">
-        Pick Your Favorite Games
-      </Typography>
-      <Typography variant="body1" className="quiz-subtitle">
-        Select at least 3 games you've enjoyed playing
-      </Typography>
-      <div className="game-grid">
-        {gameOptions.map((game) => (
-          <div 
-            key={game.id}
-            className={`game-card ${selections.games.includes(game.id) ? 'selected' : ''}`}
-            onClick={() => handleGameSelection(game.id)}
-            style={{ cursor: 'pointer' }}
-          >
-            <img src={game.image} alt={game.name} style={{ width: '100%', height: 'auto' }} />
-          </div>
-        ))}
-      </div>
-    </>
-  );
+  const renderGameSelection = () => {
+    if (loading) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+          <CircularProgress />
+        </Box>
+      );
+    }
+
+    if (!gameQuiz) {
+      return (
+        <Typography variant="h6" color="error" textAlign="center">
+          Failed to load game options. Please try again later.
+        </Typography>
+      );
+    }
+
+    return (
+      <>
+        <Typography variant="h4" component="h1" className="quiz-title">
+          {gameQuiz.quizText}
+        </Typography>
+        <Typography variant="body1" className="quiz-subtitle">
+          Select at least 3 games you've enjoyed playing
+        </Typography>
+        <div className="game-grid">
+          {gameQuiz.options.map((game) => (
+            <div 
+              key={game.id}
+              className={`game-card ${selections.games.includes(game.id) ? 'selected' : ''}`}
+              onClick={() => handleGameSelection(game.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <img src={game.HeaderImage} alt={game.text} style={{ width: '100%', height: 'auto' }} />
+            </div>
+          ))}
+        </div>
+      </>
+    );
+  };
 
   // Genre Selection - Step 2
   const renderGenreSelection = () => (
@@ -312,7 +413,7 @@ export default function QuizRoute() {
       case 0:
         return false; 
       case 1:
-        return selections.games.length < 3;
+        return selections.games.length < 3 || selections.games.length > 6;
       case 2:
         return selections.genres.length < 4;
       case 3:

@@ -15,7 +15,10 @@ const gameSchema = new mongoose.Schema({
   owners: { type: String, default: '' },
   Price: { type: Number, default: 0 },
   OwnersMin: { type: Number, default: 0 },
-  OwnersMax: { type: Number, default: 0 }
+  OwnersMax: { type: Number, default: 0 },
+  HeaderImage: { type: String }
+}, {
+  collection: 'steam_info'
 });
 
 export const Game = mongoose.model('steam', gameSchema); 

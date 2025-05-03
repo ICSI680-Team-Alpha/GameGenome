@@ -24,6 +24,7 @@ import { getQuizzes, saveQuizResponse, createStation } from '../services/api';
 interface QuizOption {
   id: string;
   text: string;
+  HeaderImage?: string;
 }
 
 interface Quiz {
@@ -58,6 +59,17 @@ const Quiz = () => {
     try {
       setLoading(true);
       const data = await getQuizzes();
+      console.log('Received quiz data:', data);
+      
+      // Log each option's imageUrl
+      data.forEach(quiz => {
+        console.log(`Quiz ${quiz.quizID} options:`);
+        quiz.options.forEach(option => {
+          console.log(`- Option ${option.id}: ${option.text}`);
+          console.log(`  Image URL: ${option.HeaderImage}`);
+        });
+      });
+      
       setQuizzes(data);
       setError(null);
     } catch (err) {
@@ -118,7 +130,6 @@ const Quiz = () => {
       setSubmitting(true);
       console.log('Starting station creation process...');
       
-      
       const stationId = Date.now();
       
       console.log('Creating station with data:', {
@@ -129,7 +140,7 @@ const Quiz = () => {
       });
       
       const newStation = await createStation({
-        stationID: stationId, // Use timestamp-based ID instead of random
+        stationID: stationId,
         name: stationName,
         type: 'quiz',
         isActive: true
@@ -140,12 +151,24 @@ const Quiz = () => {
       // Save quiz responses
       const userId = 1; 
       
-      const responses = quizzes.map(quiz => ({
-        quizID: quiz.quizID,
-        questionText: quiz.quizText,
-        questionType: quiz.quizType,
-        selection: selectedOptions[quiz.quizID] || []
-      }));
+      const responses = quizzes.map(quiz => {
+        const selectedIds = selectedOptions[quiz.quizID] || [];
+        const selectedGames = quiz.options
+          .filter(option => selectedIds.includes(option.id))
+          .map(option => ({
+            id: option.id,
+            name: option.text,
+            headerImage: option.HeaderImage
+          }));
+
+        return {
+          quizID: quiz.quizID,
+          questionText: quiz.quizText,
+          questionType: quiz.quizType,
+          selection: selectedIds,
+          selectedGames: selectedGames
+        };
+      });
       
       console.log('Saving quiz responses:', {
         userID: userId,
@@ -155,8 +178,8 @@ const Quiz = () => {
       });
       
       await saveQuizResponse({
-        userID: userId,
-        stationID: newStation.stationID,
+        userID: userId.toString(),
+        stationID: newStation.stationID.toString(),
         timestamp: new Date(),
         responses
       });
@@ -235,7 +258,38 @@ const Quiz = () => {
                         color="primary"
                       />
                     }
-                    label={option.text}
+                    label={
+                      <div className="game-card">
+                        {option.HeaderImage && (
+                          <img 
+                            src={option.HeaderImage} 
+                            alt={option.text}
+                            className="game-card-image"
+                          />
+                        )}
+                        <Typography 
+                          sx={{ 
+                            position: 'absolute', 
+                            bottom: 0, 
+                            left: 0, 
+                            right: 0,
+                            padding: '8px',
+                            background: 'rgba(0,0,0,0.7)',
+                            color: 'white',
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          {option.text}
+                        </Typography>
+                      </div>
+                    }
+                    sx={{
+                      margin: '8px 0',
+                      width: '100%',
+                      '.MuiFormControlLabel-label': {
+                        width: '100%'
+                      }
+                    }}
                   />
                 ))}
               </FormGroup>

@@ -1,45 +1,58 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+interface ISelectedGame {
+  id: string;
+  name: string;
+}
+
 interface IQuestionResponse {
-  questionNumber: number;
+  quizID: number;
   questionText: string;
-  selections: string[];
-  category: string;
+  questionType: string;
+  selection: string[];
+  selectedGames: ISelectedGame[];
 }
 
 export interface IQuizResponse extends Document {
-  userId: string;
-  stationId: string;
+  userID: string;
+  stationID: string;
+  timestamp: Date;
   responses: IQuestionResponse[];
-  preferences: {
-    genre: string[];
-    platform: string[];
-    gameplay: string[];
-  };
   createdAt: Date;
   updatedAt: Date;
 }
 
-const questionResponseSchema = new Schema({
-  questionNumber: { type: Number, required: true },
+const selectedGameSchema = new mongoose.Schema({
+  id: { type: String, required: true },
+  name: { type: String, required: true }
+});
+
+const responseSchema = new mongoose.Schema({
+  quizID: { type: Number, required: true },
   questionText: { type: String, required: true },
-  selections: [{ type: String, required: true }],
-  category: { type: String, required: true }
+  questionType: { type: String, required: true },
+  selection: [{ type: String, required: true }],
+  selectedGames: [selectedGameSchema]
 });
 
 const quizResponseSchema = new Schema({
-  userId: { type: String, required: true },
-  stationId: { type: String, required: true },
-  responses: [questionResponseSchema],
-  preferences: {
-    genre: [{ type: String }],
-    platform: [{ type: String }],
-    gameplay: [{ type: String }]
-  }
-}, { timestamps: true });
+  userID: { type: String, required: true },
+  stationID: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+  responses: [responseSchema]
+}, { 
+  timestamps: true,
+  collection: 'quizResponses'
+});
 
 // Add indexes for efficient querying
-quizResponseSchema.index({ userId: 1, stationId: 1 });
+quizResponseSchema.index({ userID: 1, stationID: 1 });
 quizResponseSchema.index({ createdAt: 1 });
 
-export const QuizResponse = mongoose.model<IQuizResponse>('QuizResponse', quizResponseSchema); 
+// Create the model with explicit collection name
+const QuizResponseModel = mongoose.model<IQuizResponse>('QuizResponse', quizResponseSchema, 'quizResponses');
+
+// Add logging to verify collection name
+console.log('QuizResponse model collection name:', QuizResponseModel.collection.name);
+
+export const QuizResponse = QuizResponseModel; 

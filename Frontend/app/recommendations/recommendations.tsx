@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
-import {
-  Typography,
+import { 
+  Typography, 
   Button, 
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
+  Box, 
+  Card, 
+  CardContent, 
+  CardMedia, 
   Rating, 
   Chip,
   IconButton,
@@ -21,7 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faArrowLeft, 
   faThumbsUp, 
-  faThumbsDown,
+  faThumbsDown, 
   faBookmark,
   faRotate
 } from '@fortawesome/free-solid-svg-icons';
@@ -271,7 +271,7 @@ const Recommendations = () => {
     setShowNewStationMessage(false);
   };
 
-    return (
+  return (
     <div className="recommendations-container">
       <img src="/Images/LOGO.png" alt="GameGenome Logo" className="recommendations-logo" />
       
@@ -310,7 +310,7 @@ const Recommendations = () => {
             <Typography variant="body1" className="recommendations-subtitle">
               Games tailored to your preferences
             </Typography>
-      </Box>
+          </Box>
           
           <Tooltip title="Refresh recommendations">
             <IconButton 
@@ -337,8 +337,8 @@ const Recommendations = () => {
           {recommendations.map((game) => (
             <Grid key={game.id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
               <Card className="game-card">
-                  <CardMedia
-                    component="img"
+                <CardMedia
+                  component="img"
                   height="200"
                   image={game.image}
                   alt={game.title}
@@ -369,10 +369,10 @@ const Recommendations = () => {
                   
                   <Box display="flex" flexWrap="wrap" mt={1} gap={0.5}>
                     {game.genres.map((genre, index) => (
-                    <Chip 
+                      <Chip 
                         key={index} 
                         label={genre} 
-                      size="small" 
+                        size="small" 
                         className="genre-chip" 
                       />
                     ))}
@@ -419,7 +419,7 @@ const Recommendations = () => {
                     </Box>
                     <Tooltip title="Save to library">
                       <IconButton 
-                      size="small" 
+                        size="small" 
                         className="action-button save-button" 
                         onClick={() => handleSave(game.id)}
                       >

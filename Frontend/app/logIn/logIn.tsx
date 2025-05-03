@@ -45,9 +45,9 @@ const LogIn = () => {
       localStorage.setItem('token', data.token || '');
       localStorage.setItem('userData', JSON.stringify(data.data || {}));
       
-      console.log('Login successful, navigating to /stations');
+      console.log('Login successful, navigating to /Stations');
       // Force navigation
-      window.location.href = '/stations';
+      window.location.href = '/Stations';
     } catch (err) {
       console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred during login');
@@ -61,6 +61,7 @@ const LogIn = () => {
         component="form" 
         className="login-form" 
         onSubmit={handleSubmit}
+        autoComplete="on"
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -90,6 +91,10 @@ const LogIn = () => {
           required 
           value={formData.Username}
           onChange={handleChange}
+          autoComplete="username"
+          inputProps={{
+            'aria-label': 'Username'
+          }}
         />
         <TextField 
           id="password" 
@@ -100,6 +105,10 @@ const LogIn = () => {
           required 
           value={formData.Password}
           onChange={handleChange}
+          autoComplete="current-password"
+          inputProps={{
+            'aria-label': 'Password'
+          }}
         />
         <Button 
           type="submit" 
