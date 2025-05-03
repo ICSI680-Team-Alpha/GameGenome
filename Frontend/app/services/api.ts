@@ -102,7 +102,28 @@ export interface SteamMedia {
   Background: string;
   Movies: string | null;
 }
+export interface FavoriteGame {
+  AppID: number;
+  Name: string;
+  HeaderImage: string;
+  Background: string;
+  Genre?: string;
+  isFavorite: boolean;
+}
+// Favorites API 
+export const getFavorites = async (): Promise<FavoriteGame[]> => {
+  const response = await axios.get(`${API_URL}/favorites`);
+  return response.data;
+};
 
+export const removeFavorite = async (AppID: number): Promise<void> => {
+  await axios.patch(`${API_URL}/feedback/${AppID}`, {
+    rating: {
+      RatingType: 'negative',
+      RatedDate: new Date().toISOString()
+    }
+  });
+};
 // API functions
 export const getSteamGames = async (): Promise<Game[]> => {
   const response = await axios.get(`${API_URL}/games`);
