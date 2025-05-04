@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router';
 import { TextField, Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

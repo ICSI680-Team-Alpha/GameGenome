@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: gamegenome.WelcomePageTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.885 s - in gamegenome.WelcomePageTest
