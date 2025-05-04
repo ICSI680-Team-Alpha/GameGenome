@@ -44,6 +44,7 @@ const LogIn = () => {
       // Store user data
       localStorage.setItem('token', data.token || '');
       localStorage.setItem('userData', JSON.stringify(data.data || {}));
+      localStorage.setItem('userId', data.data._id);
       
       console.log('Login successful, navigating to /Stations');
       // Force navigation
@@ -118,6 +119,25 @@ const LogIn = () => {
         >
           Log In
         </Button>
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <Typography variant="body2" component="span" sx={{ color: 'text.secondary' }}>
+            Don't have an account?{' '}
+          </Typography>
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => navigate('/Signup')}
+            sx={{ 
+              textTransform: 'none',
+              fontWeight: 'bold',
+              fontSize: '0.875rem',
+              p: 0,
+              minWidth: 0
+            }}
+          >
+            Sign up
+          </Button>
+        </Box>
       </Box>
     </div>
   );

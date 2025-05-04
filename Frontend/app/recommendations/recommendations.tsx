@@ -15,6 +15,7 @@ import {
   Grid
 } from '@mui/material';
 import './recommendations.css';
+import AppHeader, { HEADER_HEIGHT } from '../components/AppHeader';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -273,166 +274,167 @@ const Recommendations = () => {
 
   return (
     <div className="recommendations-container">
-      <img src="/Images/LOGO.png" alt="GameGenome Logo" className="recommendations-logo" />
-      
-      {showNewStationMessage && (
-        <div className="new-station-alert">
-          <Box className="alert-content">
-            <Typography variant="body1">
-              <strong>Station Created!</strong> Your new "{stationName}" station is ready with personalized game recommendations.
-            </Typography>
-            <Button 
-              variant="text" 
-              size="small" 
-              onClick={dismissNewStationMessage}
-              sx={{ color: 'white' }}
-            >
-              Dismiss
-            </Button>
-          </Box>
-        </div>
-      )}
-      
-      <Box className="recommendations-header">
-        <Box className="header-content">
-          <IconButton 
-            className="back-button" 
-            onClick={handleBack}
-            aria-label="back to stations"
-          >
-            <FontAwesomeIcon icon={faArrowLeft} />
-          </IconButton>
-          
-          <Box>
-            <Typography variant="h4" component="h1" className="recommendations-title">
-              {stationName}
-            </Typography>
-            <Typography variant="body1" className="recommendations-subtitle">
-              Games tailored to your preferences
-            </Typography>
-          </Box>
-          
-          <Tooltip title="Refresh recommendations">
+      <AppHeader />
+      <div style={{ marginTop: HEADER_HEIGHT + 32 }}>
+        {showNewStationMessage && (
+          <div className="new-station-alert">
+            <Box className="alert-content">
+              <Typography variant="body1">
+                <strong>Station Created!</strong> Your new "{stationName}" station is ready with personalized game recommendations.
+              </Typography>
+              <Button 
+                variant="text" 
+                size="small" 
+                onClick={dismissNewStationMessage}
+                sx={{ color: 'white' }}
+              >
+                Dismiss
+              </Button>
+            </Box>
+          </div>
+        )}
+        
+        <Box className="recommendations-header">
+          <Box className="header-content">
             <IconButton 
-              className="refresh-button" 
-              onClick={handleRefresh}
-              disabled={loading}
-              aria-label="refresh recommendations"
+              className="back-button" 
+              onClick={handleBack}
+              aria-label="back to stations"
             >
-              <FontAwesomeIcon icon={faRotate} />
+              <FontAwesomeIcon icon={faArrowLeft} />
             </IconButton>
-          </Tooltip>
+            
+            <Box>
+              <Typography variant="h4" component="h1" className="recommendations-title">
+                {stationName}
+              </Typography>
+              <Typography variant="body1" className="recommendations-subtitle">
+                Games tailored to your preferences
+              </Typography>
+            </Box>
+            
+            <Tooltip title="Refresh recommendations">
+              <IconButton 
+                className="refresh-button" 
+                onClick={handleRefresh}
+                disabled={loading}
+                aria-label="refresh recommendations"
+              >
+                <FontAwesomeIcon icon={faRotate} />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
-      </Box>
-      
-      {loading ? (
-        <Box className="loading-container">
-          <CircularProgress size={60} />
-          <Typography variant="h6" className="loading-text">
-            Loading your personalized recommendations...
-          </Typography>
-        </Box>
-      ) : (
-        <Grid container spacing={3} className="games-grid">
-          {recommendations.map((game) => (
-            <Grid key={game.id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
-              <Card className="game-card">
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={game.image}
-                  alt={game.title}
-                  className="game-image"
-                />
-                <Box className="match-score">
-                  <Typography variant="body2">
-                    {game.matchScore}% match
-                  </Typography>
-                </Box>
-                <CardContent className="game-content">
-                  <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                    <Typography variant="h6" component="h2" className="game-title">
-                      {game.title}
+        
+        {loading ? (
+          <Box className="loading-container">
+            <CircularProgress size={60} />
+            <Typography variant="h6" className="loading-text">
+              Loading your personalized recommendations...
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={3} className="games-grid">
+            {recommendations.map((game) => (
+              <Grid key={game.id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
+                <Card className="game-card">
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={game.image}
+                    alt={game.title}
+                    className="game-image"
+                  />
+                  <Box className="match-score">
+                    <Typography variant="body2">
+                      {game.matchScore}% match
                     </Typography>
-                    <Box display="flex" alignItems="center">
-                      <Rating value={game.rating} precision={0.1} readOnly size="small" />
+                  </Box>
+                  <CardContent className="game-content">
+                    <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                      <Typography variant="h6" component="h2" className="game-title">
+                        {game.title}
+                      </Typography>
+                      <Box display="flex" alignItems="center">
+                        <Rating value={game.rating} precision={0.1} readOnly size="small" />
+                      </Box>
                     </Box>
-                  </Box>
-                  
-                  <Typography 
-                    variant="body2" 
-                    color="textSecondary" 
-                    className="game-description"
-                  >
-                    {game.description}
-                  </Typography>
-                  
-                  <Box display="flex" flexWrap="wrap" mt={1} gap={0.5}>
-                    {game.genres.map((genre, index) => (
-                      <Chip 
-                        key={index} 
-                        label={genre} 
-                        size="small" 
-                        className="genre-chip" 
-                      />
-                    ))}
-                  </Box>
-                  
-                  <Box display="flex" mt={1}>
-                    <Typography variant="body2" color="textSecondary">
-                      {game.releaseYear} • 
+                    
+                    <Typography 
+                      variant="body2" 
+                      color="textSecondary" 
+                      className="game-description"
+                    >
+                      {game.description}
                     </Typography>
-                    <Box display="flex" flexWrap="wrap" ml={1}>
-                      {game.platforms.map((platform, index) => (
-                        <Typography 
+                    
+                    <Box display="flex" flexWrap="wrap" mt={1} gap={0.5}>
+                      {game.genres.map((genre, index) => (
+                        <Chip 
                           key={index} 
-                          variant="body2" 
-                          color="textSecondary" 
-                          component="span"
-                        >
-                          {platform}{index < game.platforms.length - 1 ? ', ' : ''}
-                        </Typography>
+                          label={genre} 
+                          size="small" 
+                          className="genre-chip" 
+                        />
                       ))}
                     </Box>
-                  </Box>
-                  
-                  <Box display="flex" justifyContent="space-between" mt={2}>
-                    <Box>
-                      <Tooltip title="Like this game">
+                    
+                    <Box display="flex" mt={1}>
+                      <Typography variant="body2" color="textSecondary">
+                        {game.releaseYear} • 
+                      </Typography>
+                      <Box display="flex" flexWrap="wrap" ml={1}>
+                        {game.platforms.map((platform, index) => (
+                          <Typography 
+                            key={index} 
+                            variant="body2" 
+                            color="textSecondary" 
+                            component="span"
+                          >
+                            {platform}{index < game.platforms.length - 1 ? ', ' : ''}
+                          </Typography>
+                        ))}
+                      </Box>
+                    </Box>
+                    
+                    <Box display="flex" justifyContent="space-between" mt={2}>
+                      <Box>
+                        <Tooltip title="Like this game">
+                          <IconButton 
+                            size="small" 
+                            className="action-button like-button" 
+                            onClick={() => handleLike(game.id)}
+                          >
+                            <FontAwesomeIcon icon={faThumbsUp} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Dislike this game">
+                          <IconButton 
+                            size="small" 
+                            className="action-button dislike-button" 
+                            onClick={() => handleDislike(game.id)}
+                          >
+                            <FontAwesomeIcon icon={faThumbsDown} />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                      <Tooltip title="Save to library">
                         <IconButton 
                           size="small" 
-                          className="action-button like-button" 
-                          onClick={() => handleLike(game.id)}
+                          className="action-button save-button" 
+                          onClick={() => handleSave(game.id)}
                         >
-                          <FontAwesomeIcon icon={faThumbsUp} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Dislike this game">
-                        <IconButton 
-                          size="small" 
-                          className="action-button dislike-button" 
-                          onClick={() => handleDislike(game.id)}
-                        >
-                          <FontAwesomeIcon icon={faThumbsDown} />
+                          <FontAwesomeIcon icon={faBookmark} />
                         </IconButton>
                       </Tooltip>
                     </Box>
-                    <Tooltip title="Save to library">
-                      <IconButton 
-                        size="small" 
-                        className="action-button save-button" 
-                        onClick={() => handleSave(game.id)}
-                      >
-                        <FontAwesomeIcon icon={faBookmark} />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </div>
     </div>
   );
 };

@@ -67,7 +67,19 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 };
 
 export const getUser = async (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).json({ status: 'success', message: 'Get user endpoint' });
+  try {
+    const userId = req.params.id;
+    const user = await User.findOne({ _id: userId }).select('-PasswordHash');
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+    res.status(200).json({
+      status: 'success',
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {

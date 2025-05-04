@@ -12,7 +12,7 @@ RUN npm ci
 # Copy source files
 COPY . .
 
-# Build the application
+# Build TypeScript
 RUN npm run build
 
 # Production stage
@@ -27,10 +27,10 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 # Copy built files from builder stage
-COPY --from=builder /app/dist /app/dist
+COPY --from=builder /app/dist ./dist
 
 # Expose the port the app runs on
-EXPOSE 5173
+EXPOSE 3000
 
 # Start the application
-CMD ["npm", "run", "preview"]
+CMD ["npm", "start"] 
