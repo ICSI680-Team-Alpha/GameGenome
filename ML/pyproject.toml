@@ -1,0 +1,8 @@
+[tool.pytest.ini_options]
+# Set default environment variables for tests
+env = [
+    "DB_ATLAS_URI=mongodb://testuser:testpass@localhost:27017/test_db",
+    "DB_USERNAME=testuser",
+    "DB_PASSWORD=testpass",
+    "DB_NAME=test_db"
+]
