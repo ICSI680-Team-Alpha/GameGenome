@@ -60,6 +60,7 @@ export interface Station {
 export interface QuizOption {
   id: string;
   text: string;
+  HeaderImage?: string;
 }
 
 export interface Quiz {
@@ -73,14 +74,19 @@ export interface Quiz {
 }
 
 export interface QuizResponse {
-  userID: number;
-  stationID: number;
+  userID: string;
+  stationID: string;
   timestamp: Date;
   responses: Array<{
     quizID: number;
     questionText: string;
     questionType: string;
     selection: string[];
+    selectedGames: Array<{
+      id: string;
+      name: string;
+      headerImage?: string;
+    }>;
   }>;
 }
 
@@ -215,4 +221,9 @@ export const getAllMedia = async (): Promise<SteamMedia[]> => {
     console.error('Frontend: Error getting all media:', error);
     throw error;
   }
+};
+
+export const getUserById = async (id: string) => {
+  const response = await axios.get(`/api/users/${id}`);
+  return response.data.data;
 }; 

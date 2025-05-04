@@ -131,6 +131,17 @@ const SignUp = () => {
         >
           Sign Up
         </Button>
+        <Typography variant="body2" textAlign="center" sx={{ mt: 1 }}>
+          Already have an account?{' '}
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => navigate('/Login')}
+            sx={{ p: 0, minWidth: 0 }}
+          >
+            Log in
+          </Button>
+        </Typography>
       </Box>
     </div>
   );

@@ -28,6 +28,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { getStations, deleteStation, updateStation, Station } from '../services/api';
+import AppHeader from '../components/AppHeader';
 
 const Stations = () => {
   const navigate = useNavigate();
@@ -118,7 +119,8 @@ const Stations = () => {
 
   return (
     <div className="stations-container">
-      <img src="/Images/LOGO.png" alt="GameGenome Logo" className="stations-logo" />
+      <AppHeader />
+      {/* <img src="/Images/LOGO.png" alt="GameGenome Logo" className="stations-logo" /> */}
       
       <Typography variant="h3" component="h1" className="stations-title">
         Your Game Stations

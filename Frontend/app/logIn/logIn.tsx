@@ -44,10 +44,11 @@ const LogIn = () => {
       // Store user data
       localStorage.setItem('token', data.token || '');
       localStorage.setItem('userData', JSON.stringify(data.data || {}));
+      localStorage.setItem('userId', data.data._id);
       
-      console.log('Login successful, navigating to /stations');
+      console.log('Login successful, navigating to /Stations');
       // Force navigation
-      window.location.href = '/stations';
+      window.location.href = '/Stations';
     } catch (err) {
       console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred during login');
@@ -61,6 +62,7 @@ const LogIn = () => {
         component="form" 
         className="login-form" 
         onSubmit={handleSubmit}
+        autoComplete="on"
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -90,6 +92,10 @@ const LogIn = () => {
           required 
           value={formData.Username}
           onChange={handleChange}
+          autoComplete="username"
+          inputProps={{
+            'aria-label': 'Username'
+          }}
         />
         <TextField 
           id="password" 
@@ -100,6 +106,10 @@ const LogIn = () => {
           required 
           value={formData.Password}
           onChange={handleChange}
+          autoComplete="current-password"
+          inputProps={{
+            'aria-label': 'Password'
+          }}
         />
         <Button 
           type="submit" 
@@ -109,6 +119,25 @@ const LogIn = () => {
         >
           Log In
         </Button>
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <Typography variant="body2" component="span" sx={{ color: 'text.secondary' }}>
+            Don't have an account?{' '}
+          </Typography>
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => navigate('/Signup')}
+            sx={{ 
+              textTransform: 'none',
+              fontWeight: 'bold',
+              fontSize: '0.875rem',
+              p: 0,
+              minWidth: 0
+            }}
+          >
+            Sign up
+          </Button>
+        </Box>
       </Box>
     </div>
   );

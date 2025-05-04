@@ -3,6 +3,7 @@ import { Quiz } from '../models/Quiz';
 import { QuizResponse } from '../models/QuizResponse';
 import { AppError } from '../utils/appError';
 import { catchAsync } from '../utils/catchAsync';
+import { Game } from '../models/Game';
 
 interface QuizResponseData {
   quizID: number;
@@ -30,6 +31,17 @@ const isArrayCategory = (category: QuizCategory): category is PreferenceCategory
 // Get all active quizzes
 export const getQuizzes = catchAsync(async (req: Request, res: Response) => {
   const quizzes = await Quiz.find();
+  console.log('Raw quiz data from database:', JSON.stringify(quizzes, null, 2));
+  
+  // Log each option's imageUrl
+  quizzes.forEach(quiz => {
+    console.log(`Quiz ${quiz.quizID} options:`);
+    quiz.options.forEach(option => {
+      console.log(`- Option ${option.id}: ${option.text}`);
+      console.log(`  Image URL: ${option.HeaderImage}`);
+    });
+  });
+
   res.status(200).json({
     status: 'success',
     data: quizzes
@@ -38,51 +50,46 @@ export const getQuizzes = catchAsync(async (req: Request, res: Response) => {
 
 // Save quiz response
 export const saveQuizResponse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { userId, stationId, responses } = req.body;
+  console.log('=== Quiz Response Controller ===');
+  console.log('Request body:', JSON.stringify(req.body, null, 2));
+  
+  const { userID, stationID, responses } = req.body;
 
-  if (!userId || !stationId || !responses || !Array.isArray(responses)) {
+  if (!userID || !stationID || !responses || !Array.isArray(responses)) {
+    console.error('Invalid data received:', {
+      hasUserID: !!userID,
+      hasStationID: !!stationID,
+      hasResponses: !!responses,
+      isResponsesArray: Array.isArray(responses)
+    });
     return next(new AppError('Invalid quiz response data', 400));
   }
 
-  // Initialize preferences object
-  const preferences = {
-    genre: [] as string[],
-    platform: [] as string[],
-    gameplay: [] as string[]
-  };
+  try {
+    console.log('Creating quiz response:', {
+      userID,
+      stationID,
+      responseCount: responses.length
+    });
 
-  // Process each question response and categorize selections
-  responses.forEach(response => {
-    if (response.category && response.selections) {
-      switch (response.category.toLowerCase()) {
-        case 'genre':
-          preferences.genre.push(...response.selections);
-          break;
-        case 'platform':
-          preferences.platform.push(...response.selections);
-          break;
-        case 'gameplay':
-          preferences.gameplay.push(...response.selections);
-          break;
-        default:
-          // Skip other categories
-          break;
-      }
-    }
-  });
+    // Create new quiz response
+    const quizResponse = await QuizResponse.create({
+      userID,
+      stationID,
+      responses
+    });
 
-  // Create new quiz response with processed preferences
-  const quizResponse = await QuizResponse.create({
-    userId,
-    stationId,
-    responses,
-    preferences
-  });
+    console.log('Successfully created quiz response:', JSON.stringify(quizResponse, null, 2));
+    console.log('Response saved to collection:', QuizResponse.collection.name);
 
-  res.status(201).json({
-    status: 'success',
-    data: quizResponse
-  });
+    res.status(201).json({
+      status: 'success',
+      data: quizResponse
+    });
+  } catch (error) {
+    console.error('Error saving quiz response:', error);
+    return next(new AppError('Failed to save quiz response', 500));
+  }
 });
 
 // Get quiz response by station ID

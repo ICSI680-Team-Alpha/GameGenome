@@ -28,3 +28,12 @@
 .link-blue:hover {
   text-decoration: underline;
 }
+
+/* Form styling */
+form {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+  z-index: 10 !important;
+}

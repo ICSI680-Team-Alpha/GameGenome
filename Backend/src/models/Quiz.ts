@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 const optionSchema = new mongoose.Schema({
   id: { type: String, required: true },
-  text: { type: String, required: true }
+  text: { type: String, required: true },
+  HeaderImage: { type: String } // Using HeaderImage to match Steam data
 });
 
 const quizSchema = new mongoose.Schema({
@@ -23,7 +24,7 @@ const quizSchema = new mongoose.Schema({
   }
 }, {
   timestamps: true,
-  collection: 'quiz'
+  collection: 'quizzes'
 });
 
 // Add indexes
