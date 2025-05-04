@@ -7,9 +7,20 @@ import {
   ScrollRestoration,
 } from "react-router";
 import { ThemeProvider, createTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 import type { Route } from "./+types/root";
 import "./app.css";
+
+// Import route components
+import Welcome from "./welcome/welcome";
+import Login from "./routes/logInRoute";
+import Signup from "./routes/signUpRoute";
+import Favorites from "./routes/favoriteRoute";
+import Quiz from "./routes/quizRoute";
+import Account from "./routes/accountRoute";
+import Stations from "./routes/stationsRoute";
+import Recommendations from "./routes/recommendationsRoute";
 
 const theme = createTheme({
   palette: {
@@ -43,20 +54,33 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Client-side only component to prevent hydration issues
+function ClientOnly({ children }: { children: React.ReactNode }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  return isClient ? <>{children}</> : null;
+}
+
 export default function App() {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ScrollRestoration />
         <Scripts />
         <Layout>
-          <Outlet />
+          <ClientOnly>
+            <Outlet />
+          </ClientOnly>
         </Layout>
       </body>
     </html>
@@ -80,26 +104,22 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ScrollRestoration />
         <Scripts />
         <Layout>
-          <main className="pt-16 p-4 container mx-auto">
+          <div className="error-container">
             <h1>{message}</h1>
             <p>{details}</p>
-            {stack && (
-              <pre className="w-full p-4 overflow-x-auto">
-                <code>{stack}</code>
-              </pre>
-            )}
-          </main>
+            {stack && <pre>{stack}</pre>}
+          </div>
         </Layout>
       </body>
     </html>

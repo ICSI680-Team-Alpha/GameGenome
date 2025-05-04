@@ -1,0 +1,212 @@
+import { useState, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router';
+import { 
+  Typography, 
+  Button, 
+  Box, 
+  Card, 
+  CardContent, 
+  CardMedia, 
+  Rating, 
+  Chip,
+  IconButton,
+  Tooltip,
+  CircularProgress,
+  Grid
+} from '@mui/material';
+import './recommendations.css';
+import AppHeader, { HEADER_HEIGHT } from '../components/AppHeader';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faArrowLeft, 
+  faThumbsUp, 
+  faThumbsDown, 
+  faBookmark,
+  faRotate
+} from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+
+interface Game {
+  id: string;
+  title: string;
+  image: string;
+  description: string;
+  rating: number;
+  releaseYear: number;
+  genres: string[];
+  platforms: string[];
+  matchScore: number;
+}
+
+const Recommendations = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const stationId = searchParams.get('stationId');
+  const isNewStation = searchParams.get('new') === 'true';
+  const stationNameFromUrl = searchParams.get('name');
+  const [loading, setLoading] = useState(true);
+  const [stationName, setStationName] = useState('Your Recommendations');
+  const [recommendations, setRecommendations] = useState<Game[]>([]);
+  const [showNewStationMessage, setShowNewStationMessage] = useState(isNewStation);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    setUserId(storedUserId);
+    if (stationNameFromUrl) {
+      setStationName(stationNameFromUrl);
+    }
+    if (!stationId || !storedUserId) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    axios.get(`http://localhost:8000/api/v1/get_recommendation/${storedUserId}/${stationId}?n_recommendations=10`)
+      .then(res => {
+        setRecommendations(
+          res.data.map((id: number) => ({
+            id: id.toString(),
+            title: `Game ID: ${id}`,
+            image: '/Images/placeholder.png',
+            description: 'Description not available.',
+            rating: 0,
+            releaseYear: 0,
+            genres: [],
+            platforms: [],
+            matchScore: 0
+          }))
+        );
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching recommendations:', err);
+        setLoading(false);
+      });
+  }, [stationId, stationNameFromUrl]);
+
+  const handleBack = () => {
+    navigate('/Stations');
+  };
+
+  const handleLike = (gameId: string) => {
+    console.log(`Liked game: ${gameId}`);
+  };
+
+  const handleDislike = (gameId: string) => {
+    console.log(`Disliked game: ${gameId}`);
+  };
+
+  const handleSave = (gameId: string) => {
+    console.log(`Saved game: ${gameId}`);
+  };
+
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
+  const dismissNewStationMessage = () => {
+    setShowNewStationMessage(false);
+  };
+
+  return (
+    <div className="recommendations-container">
+      <AppHeader />
+      <div style={{ marginTop: HEADER_HEIGHT + 32 }}>
+        {showNewStationMessage && (
+          <div className="new-station-alert">
+            <Box className="alert-content">
+              <Typography variant="body1">
+                <strong>Station Created!</strong> Your new "{stationName}" station is ready with personalized game recommendations.
+              </Typography>
+              <Button 
+                variant="text" 
+                size="small" 
+                onClick={dismissNewStationMessage}
+                sx={{ color: 'white' }}
+              >
+                Dismiss
+              </Button>
+            </Box>
+          </div>
+        )}
+        <Box className="recommendations-header">
+          <Box className="header-content">
+            <IconButton 
+              className="back-button" 
+              onClick={handleBack}
+              aria-label="back to stations"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </IconButton>
+            <Box>
+              <Typography variant="h4" component="h1" className="recommendations-title">
+                {stationName}
+              </Typography>
+              <Typography variant="body1" className="recommendations-subtitle">
+                Games tailored to your preferences
+              </Typography>
+            </Box>
+            <Tooltip title="Refresh recommendations">
+              <IconButton 
+                className="refresh-button" 
+                onClick={handleRefresh}
+                disabled={loading}
+                aria-label="refresh recommendations"
+              >
+                <FontAwesomeIcon icon={faRotate} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+        {loading ? (
+          <Box className="loading-container">
+            <CircularProgress size={60} />
+            <Typography variant="h6" className="loading-text">
+              Loading your personalized recommendations...
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={3} className="games-grid">
+            {recommendations.map((game) => (
+              <Grid key={game.id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
+                <Card className="game-card">
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={game.image}
+                    alt={game.title}
+                    className="game-image"
+                  />
+                  <Box className="match-score">
+                    <Typography variant="body2">
+                      {game.id}
+                    </Typography>
+                  </Box>
+                  <CardContent className="game-content">
+                    <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                      <Typography variant="h6" component="h2" className="game-title">
+                        {game.title}
+                      </Typography>
+                      <Box display="flex" alignItems="center">
+                        <Rating value={game.rating} precision={0.1} readOnly size="small" />
+                      </Box>
+                    </Box>
+                    <Typography 
+                      variant="body2" 
+                      color="textSecondary" 
+                      className="game-description"
+                    >
+                      {game.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Recommendations;

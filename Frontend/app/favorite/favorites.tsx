@@ -1,67 +1,43 @@
-import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { TextField, Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton, FormControl, InputLabel, Menu, MenuItem, Select } from '@mui/material';
+import { TextField, Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faArrowLeft, faUser, faSignOutAlt, faFilter } from '@fortawesome/free-solid-svg-icons';
-//import axios from 'axios';
+import { faHeart, faArrowLeft, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
+const FavoritesPage = () => {
+const navigate = useNavigate();
 
-interface Game {
-  AppID: number;
-  Name: string;
-  Categories: string;
-  Genre: string;
-  Tags: string;
-  Background: string;
-}
-
-const FavoritesPage = () => { //connect to server.js
-  const navigate = useNavigate();
-
-  const [games, setGames] = useState<Game[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState('all');
-  const [availableGenres, setAvailableGenres] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const { data } = await axios.get<Game[]>('/api/favorites');
-        setGames(data);
-
-        // Extract and set unique genres
-        const genres = [...new Set(
-          data.flatMap(game => game.Genre?.split(',').map(g => g.trim()) || []
-          ))].filter(Boolean);
-
-        setAvailableGenres(genres);
-      } catch (error) {
-        console.error('Failed to fetch favorites:', error);
-      } finally {
-        setLoading(false);
+const handleRemoveFavorite = async (gameId: number) => {
+  try {
+    const response = await fetch(`/api/games/${gameId}/favorite`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
-    };
+    });
+  } catch (error) {
+    console.error('Error removing favorite:', error);
+    alert('Failed to remove favorite. Please try again.');
+  }
+};
+  //Fix
+  //Call API for data for FavoritesGames
 
-    fetchData();
-  }, []); // Empty dependency array means this runs once on mount
-
-  const filteredGames = selectedGenre === 'all'
-    ? games
-    : games.filter(game => game.Genre?.includes(selectedGenre));
-
-
-  const handleBackClick = () => {
-    navigate(-1);
+const handleBackClick = () => {
+    navigate('/'); 
   };
-  const handleRemoveFavorite = async (AppID: number) => {
-    try {
-      await axios.patch(`api/favorites/${AppID}`, { favortite: false })
-    }
-    catch (error) {
-      console.error('Failed to remove favorite:', error);
-    }
-  };
+  //navigate to Game Preview
+const gamePreviewPath = (gameId: number): void => {
+  navigate(`/gamePreview/${gameId}`);
+}
+  const favoriteGames = [
+    { id: 1, title: 'Spiderman ', image: '/Images/spiderman2.jpg' },
+    { id: 2, title: 'Batman', image: '/Images/batman.jpg' },
+    { id: 3, title: 'Game 3', image: '/Images/batman.jpg' },
+    { id: 4, title: 'Game 4', image: '/Images/batman.jpg' },
+    { id: 5, title: 'Game 5', image: '/Images/batman.jpg' },
+    { id: 6, title: 'Game 6', image: '/Images/batman.jpg' },
+  ];
 
   return (
     <Box
@@ -74,27 +50,27 @@ const FavoritesPage = () => { //connect to server.js
       }}
     >
       <Box sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '1rem',
-      }}>
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1rem',
+        }}>
         <Box sx={{ width: 250, height: 80 }}>
           <img src="/Images/LOGO.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </Box>
         <Typography variant="h4" component="h1" sx={{ color: 'white', fontWeight: 'bold' }}>
-          FAVORITE GAMES
+          FAVORITES
         </Typography>
         <Box>
-          <Button variant="contained"
-            onClick={() => navigate('/account')}
-            sx={{ color: 'black', background: 'white' }}>
+          <Button variant="contained" 
+                  onClick={() => navigate('/account')}
+                  sx={{ color: 'black', background: 'white' }}>
             <FontAwesomeIcon icon={faUser} />
             Account
           </Button>
-          <Button variant='contained'
-            onClick={() => navigate('/')}
-            sx={{ color: 'black', ml: 1, background: 'white' }}>
+          <Button variant='contained' 
+                  onClick={() => navigate('/welcome')}
+                  sx={{ color: 'black', ml: 1 , background:'white'}}>
             <FontAwesomeIcon icon={faSignOutAlt} />
             Logout
           </Button>
@@ -102,9 +78,7 @@ const FavoritesPage = () => { //connect to server.js
       </Box>
 
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* Functional Buttons */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-          {/* Back Button */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',  mb: 4 }}>
           <Button
             onClick={handleBackClick}
             variant="contained"
@@ -113,34 +87,7 @@ const FavoritesPage = () => { //connect to server.js
           >
             Back
           </Button>
-          {/* Filter the Games, select appears on favorites */}
-
-          <Select sx={{
-            color: 'white',
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'white',
-            },
-            '.MuiSvgIcon-root': {
-              color: 'white',
-            }
-          }}
-
-            value={selectedGenre}
-            onChange={(e) => setSelectedGenre(e.target.value)}
-          >
-            {/**Menu drop down */}
-            <MenuItem
-              sx={{
-                backgroundColor: 'white',
-                color: 'black' // Keep black text for contrast on white background
-              }}
-              value="all"
-            >Genre</MenuItem>
-            {availableGenres.map(genre => (
-              <MenuItem key={genre} value={genre}>{genre}</MenuItem>
-            ))}
-          </Select>
-          {/* Search Bar */}
+          
           <TextField
             variant="outlined"
             placeholder="Search games..."
@@ -161,15 +108,12 @@ const FavoritesPage = () => { //connect to server.js
               },
             }}
           />
-
-
         </Box>
         <div className="game-grid">
-          {/**GAME GRID DISPLAYED*/}
-          <Grid container spacing={4}>
-            {games.map((game) => (
-              <Card key={game.AppID}
-                onClick={() => (navigate('/'))}//add path to GAME PREVIEW
+      <Grid container spacing={4}>
+          {favoriteGames.map((game) => (
+              <Card
+                onClick={() => gamePreviewPath(game.id)}
                 sx={{
                   height: '100%',
                   display: 'flex',
@@ -184,28 +128,28 @@ const FavoritesPage = () => { //connect to server.js
               >
                 <CardMedia
                   component="img"
-                  image={game.Background}
-                  alt={game.Name}
-                  sx={{ height: 250, width: 250, objectFit: 'cover' }}
+                  image={game.image}
+                  alt={game.title}
+                  sx={{ height: 250, width:250, objectFit: 'cover' }}
                 />
                 <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold' }}>
-                    {game.Name}
+                    {game.title}
                   </Typography>
-                  <IconButton
-                    aria-label="remove from favorites"
+                  <IconButton 
+                    aria-label="remove from favorites" 
                     sx={{ color: 'red' }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleRemoveFavorite(game.AppID);
+                      handleRemoveFavorite()
                     }}
                   >
                     <FontAwesomeIcon icon={faHeart} />
                   </IconButton>
                 </CardContent>
               </Card>
-            ))}
-          </Grid>
+          ))}
+        </Grid>
         </div>
       </Container>
     </Box>

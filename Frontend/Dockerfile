@@ -1,22 +1,36 @@
-FROM node:20-alpine AS development-dependencies-env
-COPY . /app
+# Build stage
+FROM node:20-alpine AS builder
+
 WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
 RUN npm ci
 
-FROM node:20-alpine AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
-WORKDIR /app
-RUN npm ci --omit=dev
+# Copy source files
+COPY . .
 
-FROM node:20-alpine AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
-WORKDIR /app
+# Build the application
 RUN npm run build
 
+# Production stage
 FROM node:20-alpine
-COPY ./package.json package-lock.json /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
+
 WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies
+RUN npm ci --omit=dev
+
+# Copy built files from builder stage to the correct location
+COPY --from=builder /app/build ./build
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Start the application
 CMD ["npm", "run", "start"]

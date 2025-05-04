@@ -2,8 +2,8 @@
   background-image: url('/Images/Background.png');
   background-size: cover;
   background-position: center;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,18 +12,28 @@
 
 .logo {
   position: absolute;
-  top: 2vh;
-  left: 2vw;
-  width: 15vw;
+  top: 20px;
+  left: 20px;
+  width: 200px;
   height: auto;
+  max-width: 15%;
 }
 
 .link-blue {
   color: blue;
   text-decoration: none;
-  font-size: 1.5vw;
+  font-size: 16px;
 }
 
 .link-blue:hover {
   text-decoration: underline;
+}
+
+/* Form styling */
+form {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(10px) !important;
+  z-index: 10 !important;
 }
