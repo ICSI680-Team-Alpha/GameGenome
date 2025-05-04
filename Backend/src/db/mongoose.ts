@@ -8,7 +8,12 @@ export const connectDB = async () => {
     console.log('=== MongoDB Connection ===');
     console.log('Connecting to MongoDB at:', process.env.MONGODB_URI);
     
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gamegenome');
+    const mongoURI = process.env.MONGODB_URI;
+    if (!mongoURI) {
+      console.error('MongoDB URI is not defined in environment variables');
+      process.exit(1);
+    }
+    await mongoose.connect(mongoURI);
     
     console.log('MongoDB connected successfully');
     console.log('Database name:', mongoose.connection.db.databaseName);

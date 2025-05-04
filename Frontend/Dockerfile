@@ -23,14 +23,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies only
+# Install production dependencies
 RUN npm ci --omit=dev
 
-# Copy built files from builder stage
-COPY --from=builder /app/dist /app/dist
+# Copy built files from builder stage to the correct location
+COPY --from=builder /app/build ./build
 
 # Expose the port the app runs on
-EXPOSE 5173
+EXPOSE 3000
 
 # Start the application
-CMD ["npm", "run", "preview"]
+CMD ["npm", "run", "start"]
