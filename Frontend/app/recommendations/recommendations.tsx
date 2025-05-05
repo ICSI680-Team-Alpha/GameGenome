@@ -61,22 +61,42 @@ const Recommendations = () => {
       return;
     }
     setLoading(true);
-    axios.get(`http://3.83.244.139:8000/api/v1/get_recommendation/${stationId}?n_recommendations=10`)
-    // axios.get(`/api/v1/get_recommendation/${stationId}?n_recommendations=10`)
-      .then(res => {
-        setRecommendations(
-          res.data.map((id: number) => ({
-            id: id.toString(),
-            title: `Game ID: ${id}`,
-            image: '/Images/placeholder.png',
-            description: 'Description not available.',
-            rating: 0,
-            releaseYear: 0,
-            genres: [],
-            platforms: [],
-            matchScore: 0
-          }))
-        );
+    axios.get(`http://54.87.3.247:8000/api/v1/get_recommendation/${stationId}?n_recommendations=10`)
+      .then(async res => {
+        const gameIds = res.data;
+        const gameDetailsPromises = gameIds.map(async (id: number) => {
+          try {
+            const gameResponse = await axios.get(`http://54.87.3.247:8000/api/games/${id}`);
+            const gameData = gameResponse.data.data;
+            return {
+              id: id.toString(),
+              title: gameData.Name,
+              image: gameData.HeaderImage || '/Images/placeholder.png',
+              description: gameData.Genres || 'Description not available.',
+              rating: 0,
+              releaseYear: 0,
+              genres: gameData.Genres ? gameData.Genres.split(',').map((g: string) => g.trim()) : [],
+              platforms: [],
+              matchScore: 0
+            };
+          } catch (error) {
+            console.error(`Error fetching details for game ${id}:`, error);
+            return {
+              id: id.toString(),
+              title: `Game ID: ${id}`,
+              image: '/Images/placeholder.png',
+              description: 'Description not available.',
+              rating: 0,
+              releaseYear: 0,
+              genres: [],
+              platforms: [],
+              matchScore: 0
+            };
+          }
+        });
+        
+        const gameDetails = await Promise.all(gameDetailsPromises);
+        setRecommendations(gameDetails);
         setLoading(false);
       })
       .catch(err => {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://3.83.244.139:5000/api';
+const API_URL = 'http://54.87.3.247:5000/api';
 
 // Game interfaces
 export interface Game {
@@ -226,4 +226,14 @@ export const getAllMedia = async (): Promise<SteamMedia[]> => {
 export const getUserById = async (id: string) => {
   const response = await axios.get(`/api/users/${id}`);
   return response.data.data;
+};
+
+export const getGameDetails = async (appId: number): Promise<Game> => {
+  try {
+    const response = await axios.get(`${API_URL}/games/${appId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching game details:', error);
+    throw error;
+  }
 }; 
