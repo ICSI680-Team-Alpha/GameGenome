@@ -16,7 +16,8 @@ const gameSchema = new mongoose.Schema({
   Price: { type: Number, default: 0 },
   OwnersMin: { type: Number, default: 0 },
   OwnersMax: { type: Number, default: 0 },
-  HeaderImage: { type: String }
+  HeaderImage: { type: String },
+  Genres: { type: String }
 }, {
   collection: 'steam_info'
 });
