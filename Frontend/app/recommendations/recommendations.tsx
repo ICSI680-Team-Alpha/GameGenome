@@ -61,7 +61,7 @@ const Recommendations = () => {
       return;
     }
     setLoading(true);
-    axios.get(`http://localhost:8000/api/v1/get_recommendation/${stationId}?n_recommendations=10`)
+    axios.get(`http://3.83.244.139:8000/api/v1/get_recommendation/${stationId}?n_recommendations=10`)
     // axios.get(`/api/v1/get_recommendation/${stationId}?n_recommendations=10`)
       .then(res => {
         setRecommendations(
