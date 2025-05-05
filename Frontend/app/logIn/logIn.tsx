@@ -25,7 +25,7 @@ const LogIn = () => {
     console.log('Attempting login with:', formData);
 
     try {
-      const response = await fetch('http://3.83.244.139/api/users/login', {
+      const response = await fetch('http://3.83.244.139:5000/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
