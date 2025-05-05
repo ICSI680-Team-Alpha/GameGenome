@@ -32,3 +32,5 @@ services:
       - NODE_ENV=production
     env_file:
       - ./ML/.env
+    dns:
+      - 8.8.8.8
