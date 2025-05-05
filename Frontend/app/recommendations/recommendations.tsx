@@ -66,7 +66,7 @@ const Recommendations = () => {
         const gameIds = res.data;
         const gameDetailsPromises = gameIds.map(async (id: number) => {
           try {
-            const gameResponse = await axios.get(`http://54.87.3.247:8000/api/games/${id}`);
+            const gameResponse = await axios.get(`http://54.87.3.247:5000/api/games/${id}`);
             const gameData = gameResponse.data.data;
             return {
               id: id.toString(),
