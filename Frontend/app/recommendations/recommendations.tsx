@@ -158,6 +158,11 @@ const Recommendations = () => {
     <div className="recommendations-container">
       <AppHeader />
       <div style={{ marginTop: HEADER_HEIGHT + 32 }}>
+        <Box className="recommendations-header">
+          <Typography variant="h4" align="center" className="recommendations-title">
+            Recommendations for {stationName}
+          </Typography>
+        </Box>
         {showNewStationMessage && (
           <div className="new-station-alert">
             <Box className="alert-content">
@@ -175,35 +180,6 @@ const Recommendations = () => {
             </Box>
           </div>
         )}
-        <Box className="recommendations-header">
-          <Box className="header-content">
-            <IconButton 
-              className="back-button" 
-              onClick={handleBack}
-              aria-label="back to stations"
-            >
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </IconButton>
-            <Box>
-              <Typography variant="h4" component="h1" className="recommendations-title">
-                {stationName}
-              </Typography>
-              <Typography variant="body1" className="recommendations-subtitle">
-                Games tailored to your preferences
-              </Typography>
-            </Box>
-            <Tooltip title="Refresh recommendations">
-              <IconButton 
-                className="refresh-button" 
-                onClick={handleRefresh}
-                disabled={loading}
-                aria-label="refresh recommendations"
-              >
-                <FontAwesomeIcon icon={faRotate} />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </Box>
         {loading ? (
           <Box className="loading-container">
             <CircularProgress size={60} />
