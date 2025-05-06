@@ -9,6 +9,12 @@ const navigate = useNavigate();
 const [favoriteGames, setFavoriteGames] = useState<any[]>([]);
 
 useEffect(() => {
+  if (!localStorage.getItem('userId')) {
+    navigate('/');
+  }
+}, [navigate]);
+
+useEffect(() => {
   const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
   setFavoriteGames(storedFavorites);
 }, []);
@@ -65,7 +71,7 @@ return (
         <Button variant='contained' 
                 onClick={() => {
                   localStorage.clear();
-                  navigate('/welcome');
+                  navigate('/');
                 }}
                 sx={{ color: 'black', background:'white'}}>
           <FontAwesomeIcon icon={faSignOutAlt} />

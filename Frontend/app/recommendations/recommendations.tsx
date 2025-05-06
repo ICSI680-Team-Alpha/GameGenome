@@ -56,6 +56,12 @@ const Recommendations = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
+    if (!localStorage.getItem('userId')) {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
     setUserId(storedUserId);
     if (stationNameFromUrl) {
