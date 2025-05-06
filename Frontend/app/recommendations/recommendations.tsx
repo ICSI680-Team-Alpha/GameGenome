@@ -198,25 +198,6 @@ const Recommendations = () => {
             </Tooltip>
           </Box>
         </Box>
-        {/* Custom Header (like Favorites) */}
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '1rem',
-        }}>
-          <Box sx={{ width: 250, height: 80 }}>
-            <img src="/Images/LOGO.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-          </Box>
-          <Box>
-            <Button variant="contained" onClick={() => navigate('/account')} sx={{ color: 'black', background: 'white', mr: 1 }}>
-              <FontAwesomeIcon icon={faUser} /> Account
-            </Button>
-            <Button variant="contained" onClick={() => navigate('/favorites')} sx={{ color: 'black', background: 'white' }}>
-              <FontAwesomeIcon icon={faHeart} /> Favorite Games
-            </Button>
-          </Box>
-        </Box>
         {loading ? (
           <Box className="loading-container">
             <CircularProgress size={60} />
