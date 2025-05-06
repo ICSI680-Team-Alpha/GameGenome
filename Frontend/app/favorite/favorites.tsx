@@ -24,20 +24,24 @@ const handleRemoveFavorite = async (gameId: number) => {
   //Call API for data for FavoritesGames
 
 const handleBackClick = () => {
-    navigate('/'); 
-  };
+  if (window.history.length > 2) {
+    navigate(-1);
+  } else {
+    navigate('/Stations');
+  }
+};
   //navigate to Game Preview
 const gamePreviewPath = (gameId: number): void => {
   navigate(`/gamePreview/${gameId}`);
 }
-  const favoriteGames = [
-    { id: 1, title: 'Spiderman ', image: '/Images/spiderman2.jpg' },
-    { id: 2, title: 'Batman', image: '/Images/batman.jpg' },
-    { id: 3, title: 'Game 3', image: '/Images/batman.jpg' },
-    { id: 4, title: 'Game 4', image: '/Images/batman.jpg' },
-    { id: 5, title: 'Game 5', image: '/Images/batman.jpg' },
-    { id: 6, title: 'Game 6', image: '/Images/batman.jpg' },
-  ];
+  // const favoriteGames = [
+  //   { id: 1, title: 'Spiderman ', image: '/Images/spiderman2.jpg' },
+  //   { id: 2, title: 'Batman', image: '/Images/batman.jpg' },
+  //   { id: 3, title: 'Game 3', image: '/Images/batman.jpg' },
+  //   { id: 4, title: 'Game 4', image: '/Images/batman.jpg' },
+  //   { id: 5, title: 'Game 5', image: '/Images/batman.jpg' },
+  //   { id: 6, title: 'Game 6', image: '/Images/batman.jpg' },
+  // ];
 
   return (
     <Box
@@ -69,10 +73,12 @@ const gamePreviewPath = (gameId: number): void => {
             Account
           </Button>
           <Button variant='contained' 
-                  onClick={() => navigate('/welcome')}
+                  onClick={() => {
+                    localStorage.clear();
+                    navigate('/welcome');
+                  }}
                   sx={{ color: 'black', ml: 1 , background:'white'}}>
             <FontAwesomeIcon icon={faSignOutAlt} />
-            Logout
           </Button>
         </Box>
       </Box>
@@ -111,7 +117,7 @@ const gamePreviewPath = (gameId: number): void => {
         </Box>
         <div className="game-grid">
       <Grid container spacing={4}>
-          {favoriteGames.map((game) => (
+          {/* favoriteGames.map((game) => (
               <Card
                 onClick={() => gamePreviewPath(game.id)}
                 sx={{
@@ -148,7 +154,7 @@ const gamePreviewPath = (gameId: number): void => {
                   </IconButton>
                 </CardContent>
               </Card>
-          ))}
+          )) */}
         </Grid>
         </div>
       </Container>

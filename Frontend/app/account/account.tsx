@@ -79,6 +79,17 @@ const Account = () => {
           >
             Password
           </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            sx={{ width: '100%', fontWeight: 600, mt: 2, background: 'white', color: 'red', borderColor: 'red' }}
+            onClick={() => {
+              localStorage.clear();
+              navigate('/welcome');
+            }}
+          >
+            Logout
+          </Button>
         </Paper>
 
         {/* Right Panel */}
