@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const stationSchema = new mongoose.Schema({
   stationID: { type: Number, required: true, unique: true },
+  userID: { type: String, required: true },
   name: { type: String, required: true },
   description: { type: String },
   location: {

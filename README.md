@@ -1,6 +1,6 @@
 # GameGenome
 
-GameGenome is a Pandora-like web application that recommends video games to users based on their responses to a personalized quiz. The project leverages a modern React frontend and a Python backend, and is deployed on AWS.
+GameGenome is a Pandora-like web application that recommends video games to users based on their responses to a personalized quiz. The project leverages a modern React frontend and a Node.js/TypeScript backend (Express, MongoDB). The system is deployed on AWS.
 
 ## Live Demo
 
@@ -16,14 +16,13 @@ Access the deployed application here: [http://54.87.3.247:3000/](http://54.87.3.
 ## Project Structure
 
 - `/Frontend` — React app (TypeScript, MUI, React Router)
-- `/Backend` — Python backend (Flask/FastAPI, REST API)
+- `/Backend` — Node.js/TypeScript backend (Express, MongoDB)
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (v16+ recommended)
 - npm or yarn
-- Python 3.8+
 - Docker (optional, for containerized deployment)
 
 ### Frontend Setup
@@ -39,8 +38,9 @@ The app will be available at `http://localhost:5173` by default.
 
 ```bash
 cd Backend
-pip install -r requirements.txt
-python app.py  # or your backend entrypoint
+npm install
+npm run build
+npm start
 ```
 The backend will run on the port specified in your backend config (commonly 5000 or 8000).
 
