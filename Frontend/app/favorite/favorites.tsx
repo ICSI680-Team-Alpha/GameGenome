@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import { TextField, Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faArrowLeft, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faArrowLeft, faUser, faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
 
 const FavoritesPage = () => {
 const navigate = useNavigate();
@@ -62,23 +62,30 @@ return (
       <Box sx={{ width: 250, height: 80 }}>
         <img src="/Images/LOGO.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
       </Box>
-      <Box>
-        <Button variant="contained" 
-                onClick={() => navigate('/Stations')}
-                sx={{ color: 'black', background: 'white', mr: 1 }}>
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        <Button
+          variant="contained"
+          startIcon={<FontAwesomeIcon icon={faHome} />}
+          sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
+          onClick={() => navigate('/Stations')}
+        >
           Stations
         </Button>
-        <Button variant="contained" 
-                onClick={() => navigate('/account')}
-                sx={{ color: 'black', background: 'white', mr: 1 }}>
+        <Button
+          variant="contained"
+          sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={() => navigate('/account')}
+        >
           <FontAwesomeIcon icon={faUser} />
         </Button>
-        <Button variant='contained' 
-                onClick={() => {
-                  localStorage.clear();
-                  navigate('/');
-                }}
-                sx={{ color: 'black', background:'white'}}>
+        <Button
+          variant="contained"
+          sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={() => {
+            localStorage.clear();
+            navigate('/');
+          }}
+        >
           <FontAwesomeIcon icon={faSignOutAlt} />
         </Button>
       </Box>
