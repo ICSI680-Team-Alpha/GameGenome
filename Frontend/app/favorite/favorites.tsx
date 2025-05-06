@@ -25,7 +25,7 @@ const FavoritesPage = () => {
 
   useEffect(() => {
     if (!userId) navigate('/');
-    
+
     const fetchGames = async () => {
       try {
         const feedbackRes = await axios.get(`http://54.87.3.247:8000/api/v1/game_feedback?userId=${userId}`);
@@ -70,151 +70,170 @@ const FavoritesPage = () => {
       alert('Failed to remove favorite');
     }
   };
-const handleBackClick = () => {
-  if (window.history.length > 2) {
-    navigate(-1);
-  } else {
-    navigate('/Stations');
+  const handleBackClick = () => {
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate('/Stations');
+    }
+  };
+  const gamePreviewPath = (gameId: number): void => {
+    navigate(`/gamePreview/${gameId}`);
   }
-};
-const gamePreviewPath = (gameId: number): void => {
-  navigate(`/gamePreview/${gameId}`);
-}
 
-return (
-  <Box
-    sx={{
-      minHeight: '100vh',
-      backgroundImage: 'url(/Images/Background.png)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
-    }}
-  >
-    <Box sx={{
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        backgroundImage: 'url(/Images/Background.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      <Box sx={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '1rem',
       }}>
-      <Box sx={{ width: 250, height: 80 }}>
-        <img src="/Images/LOGO.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-      </Box>
-      <Typography variant="h4" component="h1" sx={{ color: 'white', fontWeight: 'bold' }}>
-      FAVORITE GAMES
-      </Typography> 
-      <Box sx={{ display: 'flex', gap: 2 }}>
-        <Button
-          variant="contained"
-          startIcon={<FontAwesomeIcon icon={faHome} />}
-          sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
-          onClick={() => navigate('/Stations')}
-        >
-          Stations
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          onClick={() => navigate('/account')}
-        >
-          <FontAwesomeIcon icon={faUser} />
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          onClick={() => {
-            localStorage.clear();
-            navigate('/');
-          }}
-        >
-          <FontAwesomeIcon icon={faSignOutAlt} />
-        </Button>
-      </Box>
-    </Box>
+        <Box sx={{ width: 250, height: 80 }}>
+          <img src="/Images/LOGO.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        </Box>
+        <Typography variant="h4" component="h1" sx={{ color: 'white', fontWeight: 'bold' }}>
+          FAVORITE GAMES
+        </Typography>
 
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',  mb: 4 }}>
-        <Button
-          onClick={handleBackClick}
-          variant="contained"
-          startIcon={<FontAwesomeIcon icon={faArrowLeft} />}
-          sx={{ backgroundColor: 'primary.main', '&:hover': { backgroundColor: 'primary.dark' } }}
-        >
-          Back
-        </Button>
-        <TextField
-          variant="outlined"
-          placeholder="Search games..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{
-            width: '40%',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            borderRadius: 1,
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: 'transparent',
-              },
-              '&:hover fieldset': {
-                borderColor: 'primary.main',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'primary.main',
-              },
-            },
-          }}
-        />
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<FontAwesomeIcon icon={faHome} />}
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
+            onClick={() => navigate('/Stations')}
+          >
+            Stations
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => navigate('/account')}
+          >
+            <FontAwesomeIcon icon={faUser} />
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => {
+              localStorage.clear();
+              navigate('/');
+            }}
+          >
+            <FontAwesomeIcon icon={faSignOutAlt} />
+          </Button>
+        </Box>
       </Box>
+
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+          <Button
+            onClick={handleBackClick}
+            variant="contained"
+            startIcon={<FontAwesomeIcon icon={faArrowLeft} />}
+            sx={{ backgroundColor: 'primary.main', '&:hover': { backgroundColor: 'primary.dark' } }}
+          >
+            Back
+          </Button>
+          <TextField
+            variant="outlined"
+            placeholder="Search games..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{
+              width: '40%',
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              borderRadius: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'transparent',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'primary.main',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'primary.main',
+                },
+              },
+            }}
+          />
+        </Box>
         <Grid container spacing={4}>
           {games.length === 0 ? (
             <Typography variant="h6" color="textSecondary" sx={{ width: '100%', textAlign: 'center', mt: 4 }}>
-              No favorite games yet.
+              No favorite games yet
             </Typography>
-          ) : games.map((game) => (
-            <Card
-              key={game.AppID}
-              onClick={() => gamePreviewPath(game.AppID)}
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                transition: 'transform 0.3s',
-                cursor: 'pointer',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                },
-              }}
-            >
-              <CardMedia
+          ) : (
+            games.map((game) => (
+              <Grid item key={game.AppID} xs={12} sm={6} md={4} lg={3}>
+                <Card
+                  sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    bgcolor: 'rgba(255, 255, 255, 0.9)',
+                    transition: 'transform 0.2s',
+                    '&:hover': { transform: 'scale(1.03)' }
+                  }}
+                  onClick={() => navigate(`/gamePreview/${game.AppID}`)}
+                >
+                  <CardMedia
                     component="img"
-                    height="200"
                     image={game.HeaderImage}
                     alt={game.Name}
-                    className="game-image"
+                    sx={{
+                      width: 'auto', 
+                      height: 200,       
+                      maxWidth: '100%',   
+                      margin: '0 auto',   
+                      display: 'block'
+                    }}
                   />
-              <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold' }}>
-                  {game.Name}
-                </Typography>
-                <IconButton 
-                  aria-label="remove from favorites" 
-                  sx={{ color: 'red' }}
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleRemoveFavorite(game.AppID);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faHeart} />
-                </IconButton>
-              </CardContent>
-            </Card>
-          ))}
+                  <CardContent sx={{
+                    flexGrow: 1,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      sx={{
+                        maxWidth: '80%',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {game.Name}
+                    </Typography>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveFavorite(game.AppID);
+                      }}
+                      sx={{ color: 'red' }}
+                    >
+                      <FontAwesomeIcon icon={faHeart} />
+                    </IconButton>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          )}
         </Grid>
-    
-    </Container>
-  </Box>
-);
+
+      </Container>
+    </Box>
+  );
 }
 
 export default FavoritesPage;
