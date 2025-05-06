@@ -136,3 +136,21 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     next(error);
   }
 }; 
+
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.params.id;
+    const update = req.body;
+    const user = await User.findByIdAndUpdate(userId, update, { new: true, runValidators: true }).select('-PasswordHash');
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+    res.status(200).json({
+      status: 'success',
+      message: 'User updated successfully',
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
+};
