@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { User } from '../models/User';
 import { AppError } from '../middleware/errorHandler';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -100,6 +101,13 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       throw new AppError('Invalid username or password', 401);
     }
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
     // Update last login
     const now = new Date();
     await User.updateOne(
@@ -119,7 +127,10 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     res.status(200).json({ 
       status: 'success',
       message: 'Login successful',
-      data: userResponse
+      data: {
+        user: userResponse,
+        token
+      }
     });
   } catch (error) {
     next(error);

@@ -2,6 +2,41 @@ import axios from 'axios';
 
 const API_URL = 'http://54.87.3.247:5000/api';
 
+// Create axios instance with default config
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Add request interceptor to add auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle token expiration
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear token and redirect to login
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Game interfaces
 export interface Game {
   _id: string;
@@ -31,6 +66,7 @@ export interface GameFeedback {
 export interface Station {
   _id?: string;
   stationID: number;
+  userID: string;
   name: string;
   description?: string;
   location?: {
@@ -109,24 +145,44 @@ export interface SteamMedia {
   Movies: string | null;
 }
 
+// User interfaces
+export interface LoginCredentials {
+  Username: string;
+  Password: string;
+}
+
+export interface LoginResponse {
+  status: string;
+  message: string;
+  data: {
+    user: {
+      _id: string;
+      Username: string;
+      Email: string;
+      // ... other user fields
+    };
+    token: string;
+  };
+}
+
 // API functions
 export const getSteamGames = async (): Promise<Game[]> => {
-  const response = await axios.get(`${API_URL}/games`);
+  const response = await api.get('/games');
   return response.data.data;
 };
 
 export const getSteamGameById = async (id: number): Promise<Game> => {
-  const response = await axios.get(`${API_URL}/games/${id}`);
+  const response = await api.get(`/games/${id}`);
   return response.data.data;
 };
 
 export const saveGameFeedback = async (feedback: GameFeedback): Promise<GameFeedback> => {
-  const response = await axios.post(`${API_URL}/feedback`, feedback);
+  const response = await api.post('/feedback', feedback);
   return response.data.data;
 };
 
 export const getGameFeedback = async (userId: number, stationId: number): Promise<GameFeedback[]> => {
-  const response = await axios.get(`${API_URL}/feedback?userId=${userId}&stationId=${stationId}`);
+  const response = await api.get(`/feedback?userId=${userId}&stationId=${stationId}`);
   return response.data.data;
 };
 
@@ -134,7 +190,7 @@ export const getGameFeedback = async (userId: number, stationId: number): Promis
 export const createStation = async (station: Station): Promise<Station> => {
   try {
     console.log('Frontend: Creating station with data:', station);
-    const response = await axios.post(`${API_URL}/stations`, station);
+    const response = await api.post('/stations', station);
     console.log('Frontend: Station created successfully:', response.data);
     return response.data.data;
   } catch (error) {
@@ -144,32 +200,32 @@ export const createStation = async (station: Station): Promise<Station> => {
 };
 
 export const getStations = async (): Promise<Station[]> => {
-  const response = await axios.get(`${API_URL}/stations`);
+  const response = await api.get('/stations');
   return response.data.data;
 };
 
 export const getStationById = async (id: string): Promise<Station> => {
-  const response = await axios.get(`${API_URL}/stations/${id}`);
+  const response = await api.get(`/stations/${id}`);
   return response.data.data;
 };
 
 export const updateStation = async (id: string, station: Partial<Station>): Promise<Station> => {
-  const response = await axios.patch(`${API_URL}/stations/${id}`, station);
+  const response = await api.patch(`/stations/${id}`, station);
   return response.data.data;
 };
 
 export const deleteStation = async (id: string): Promise<void> => {
-  await axios.delete(`${API_URL}/stations/${id}`);
+  await api.delete(`/stations/${id}`);
 };
 
 // Quiz API functions
 export const getQuizzes = async (): Promise<Quiz[]> => {
-  const response = await axios.get(`${API_URL}/quizzes`);
+  const response = await api.get('/quizzes');
   return response.data.data;
 };
 
 export const saveQuizResponse = async (response: QuizResponse): Promise<any> => {
-  const apiResponse = await axios.post(`${API_URL}/quizzes/responses`, response);
+  const apiResponse = await api.post('/quizzes/responses', response);
   return apiResponse.data.data;
 };
 
@@ -177,7 +233,7 @@ export const saveQuizResponse = async (response: QuizResponse): Promise<any> => 
 export const getRecommendations = async (userId: string, stationId: string): Promise<Recommendation> => {
   try {
     console.log('Frontend: Getting recommendations for user:', userId, 'and station:', stationId);
-    const response = await axios.get(`${API_URL}/recommendations?userId=${userId}&stationId=${stationId}`);
+    const response = await api.get(`/recommendations?userId=${userId}&stationId=${stationId}`);
     console.log('Frontend: Recommendations received:', response.data);
     return response.data.data;
   } catch (error) {
@@ -189,7 +245,7 @@ export const getRecommendations = async (userId: string, stationId: string): Pro
 export const createRecommendations = async (userId: string, stationId: string): Promise<Recommendation> => {
   try {
     console.log('Frontend: Creating recommendations for user:', userId, 'and station:', stationId);
-    const response = await axios.post(`${API_URL}/recommendations`, { userId, stationId });
+    const response = await api.post('/recommendations', { userId, stationId });
     console.log('Frontend: Recommendations created:', response.data);
     return response.data.data;
   } catch (error) {
@@ -202,7 +258,7 @@ export const createRecommendations = async (userId: string, stationId: string): 
 export const getMediaByAppId = async (appId: number): Promise<SteamMedia> => {
   try {
     console.log('Frontend: Getting media for AppID:', appId);
-    const response = await axios.get(`${API_URL}/media/${appId}`);
+    const response = await api.get(`/media/${appId}`);
     console.log('Frontend: Media received:', response.data);
     return response.data.data;
   } catch (error) {
@@ -214,7 +270,7 @@ export const getMediaByAppId = async (appId: number): Promise<SteamMedia> => {
 export const getAllMedia = async (): Promise<SteamMedia[]> => {
   try {
     console.log('Frontend: Getting all media');
-    const response = await axios.get(`${API_URL}/media`);
+    const response = await api.get('/media');
     console.log('Frontend: All media received:', response.data);
     return response.data.data;
   } catch (error) {
@@ -224,16 +280,29 @@ export const getAllMedia = async (): Promise<SteamMedia[]> => {
 };
 
 export const getUserById = async (id: string) => {
-  const response = await axios.get(`/api/users/${id}`);
+  const response = await api.get(`/users/${id}`);
   return response.data.data;
 };
 
 export const getGameDetails = async (appId: number): Promise<Game> => {
   try {
-    const response = await axios.get(`${API_URL}/games/${appId}`);
+    const response = await api.get(`/games/${appId}`);
     return response.data.data;
   } catch (error) {
     console.error('Error fetching game details:', error);
+    throw error;
+  }
+};
+
+// User API functions
+export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+  try {
+    console.log('Frontend: Attempting login with:', credentials);
+    const response = await api.post('/users/login', credentials);
+    console.log('Frontend: Login response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Frontend: Login error:', error);
     throw error;
   }
 }; 
