@@ -20,24 +20,14 @@ const handleRemoveFavorite = async (gameId: number) => {
     alert('Failed to remove favorite. Please try again.');
   }
 };
-  //Fix
-  //Call API for data for FavoritesGames
 
 const handleBackClick = () => {
-    navigate('/'); 
+    navigate(-1); 
   };
-  //navigate to Game Preview
+  
 const gamePreviewPath = (gameId: number): void => {
   navigate(`/gamePreview/${gameId}`);
 }
-  const favoriteGames = [
-    { id: 1, title: 'Spiderman ', image: '/Images/spiderman2.jpg' },
-    { id: 2, title: 'Batman', image: '/Images/batman.jpg' },
-    { id: 3, title: 'Game 3', image: '/Images/batman.jpg' },
-    { id: 4, title: 'Game 4', image: '/Images/batman.jpg' },
-    { id: 5, title: 'Game 5', image: '/Images/batman.jpg' },
-    { id: 6, title: 'Game 6', image: '/Images/batman.jpg' },
-  ];
 
   return (
     <Box
