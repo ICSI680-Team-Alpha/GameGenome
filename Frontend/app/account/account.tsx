@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './account.css';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHome } from '@fortawesome/free-solid-svg-icons';
 import { Box, Button, TextField, Typography, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getUserById } from '../services/api';
@@ -54,16 +55,24 @@ const Account = () => {
         <img src="/Images/LOGO.png" alt="GameGenome Logo" style={{ height: 60 }} />
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button
-            variant="outlined"
+            variant="contained"
+            startIcon={<FontAwesomeIcon icon={faHome} />}
             sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
             onClick={() => navigate('/Stations')}
           >
             Stations
           </Button>
-          <Button variant="outlined" sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate('/Account')}>
+          <Button
+            variant="contained"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => navigate('/Account')}
+          >
             <FontAwesomeIcon icon={faUser} />
           </Button>
-          <Button variant="outlined" sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }} startIcon={<FontAwesomeIcon icon={faHeart} />} onClick={() => navigate('/Favorites')}>Favorite Games</Button>
+          <Button
+            variant="contained"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
+            startIcon={<FontAwesomeIcon icon={faHeart} />} onClick={() => navigate('/Favorites')}>Favorite Games</Button>
         </Box>
       </Box>
 
