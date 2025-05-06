@@ -12,8 +12,7 @@ import {
   IconButton,
   Tooltip,
   CircularProgress,
-  Grid,
-  Snackbar
+  Grid
 } from '@mui/material';
 import './recommendations.css';
 import AppHeader, { HEADER_HEIGHT } from '../components/AppHeader';
@@ -23,9 +22,7 @@ import {
   faThumbsUp, 
   faThumbsDown, 
   faBookmark,
-  faRotate,
-  faUser,
-  faHeart
+  faRotate
 } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
@@ -52,14 +49,6 @@ const Recommendations = () => {
   const [recommendations, setRecommendations] = useState<Game[]>([]);
   const [showNewStationMessage, setShowNewStationMessage] = useState(isNewStation);
   const [userId, setUserId] = useState<string | null>(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-
-  useEffect(() => {
-    if (!localStorage.getItem('userId')) {
-      navigate('/');
-    }
-  }, [navigate]);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
@@ -77,7 +66,7 @@ const Recommendations = () => {
         const gameIds = res.data;
         const gameDetailsPromises = gameIds.map(async (id: number) => {
           try {
-            const gameResponse = await axios.get(`http://54.87.3.247:5000/api/games/${id}`);
+            const gameResponse = await axios.get(`http://54.87.3.247:8000/api/games/${id}`);
             const gameData = gameResponse.data.data;
             return {
               id: id.toString(),
@@ -121,25 +110,11 @@ const Recommendations = () => {
   };
 
   const handleLike = (gameId: string) => {
-    const likedGame = recommendations.find(g => g.id === gameId);
-    if (!likedGame) return;
-    // Get current favorites from localStorage
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    // Add if not already in favorites
-    if (!favorites.some((g: any) => g.id === likedGame.id)) {
-      favorites.push(likedGame);
-      localStorage.setItem('favorites', JSON.stringify(favorites));
-      setSnackbarMessage(`${likedGame.title} added to favorites!`);
-      setSnackbarOpen(true);
-    } else {
-      setSnackbarMessage(`${likedGame.title} is already in favorites!`);
-      setSnackbarOpen(true);
-    }
+    console.log(`Liked game: ${gameId}`);
   };
 
   const handleDislike = (gameId: string) => {
-    setSnackbarMessage('Disliked!');
-    setSnackbarOpen(true);
+    console.log(`Disliked game: ${gameId}`);
   };
 
   const handleSave = (gameId: string) => {
@@ -158,11 +133,6 @@ const Recommendations = () => {
     <div className="recommendations-container">
       <AppHeader />
       <div style={{ marginTop: HEADER_HEIGHT + 32 }}>
-        <Box className="recommendations-header">
-          <Typography variant="h4" align="center" className="recommendations-title">
-            Recommendations for {stationName}
-          </Typography>
-        </Box>
         {showNewStationMessage && (
           <div className="new-station-alert">
             <Box className="alert-content">
@@ -180,6 +150,35 @@ const Recommendations = () => {
             </Box>
           </div>
         )}
+        <Box className="recommendations-header">
+          <Box className="header-content">
+            <IconButton 
+              className="back-button" 
+              onClick={handleBack}
+              aria-label="back to stations"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </IconButton>
+            <Box>
+              <Typography variant="h4" component="h1" className="recommendations-title">
+                {stationName}
+              </Typography>
+              <Typography variant="body1" className="recommendations-subtitle">
+                Games tailored to your preferences
+              </Typography>
+            </Box>
+            <Tooltip title="Refresh recommendations">
+              <IconButton 
+                className="refresh-button" 
+                onClick={handleRefresh}
+                disabled={loading}
+                aria-label="refresh recommendations"
+              >
+                <FontAwesomeIcon icon={faRotate} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
         {loading ? (
           <Box className="loading-container">
             <CircularProgress size={60} />
@@ -220,30 +219,12 @@ const Recommendations = () => {
                     >
                       {game.description}
                     </Typography>
-                    <Box display="flex" justifyContent="flex-end" mt={1}>
-                      <Tooltip title="Like">
-                        <IconButton onClick={() => handleLike(game.id)} color="primary">
-                          <FontAwesomeIcon icon={faThumbsUp} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Dislike">
-                        <IconButton onClick={() => handleDislike(game.id)} color="secondary">
-                          <FontAwesomeIcon icon={faThumbsDown} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
         )}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={2000}
-          onClose={() => setSnackbarOpen(false)}
-          message={snackbarMessage}
-        />
       </div>
     </div>
   );
