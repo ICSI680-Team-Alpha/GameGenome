@@ -45,6 +45,12 @@ const Stations = () => {
   const [newStationName, setNewStationName] = useState('');
   
   useEffect(() => {
+    if (!localStorage.getItem('userId')) {
+      navigate('/');
+    }
+  }, [navigate]);
+  
+  useEffect(() => {
     fetchStations();
   }, []);
   

@@ -11,7 +11,13 @@ const AppHeader = () => {
   const navigate = useNavigate();
   return (
     <div className={styles.headerRoot}>
-      <img src="/Images/LOGO.png" alt="GameGenome Logo" className={styles.logo} />
+      <img 
+        src="/Images/LOGO.png" 
+        alt="GameGenome Logo" 
+        className={styles.logo} 
+        style={{ cursor: 'pointer' }}
+        onClick={() => navigate('/')} 
+      />
       <div className={styles.headerButtons}>
         <Button className={styles.headerIconBtn} onClick={() => navigate('/Account')}>
           <FontAwesomeIcon icon={faUser} />

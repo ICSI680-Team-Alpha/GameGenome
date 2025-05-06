@@ -27,6 +27,12 @@ const Account = () => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    if (!localStorage.getItem('userId')) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   return (
     <div className="main-container" style={{ minHeight: '100vh', backgroundImage: "url('/Images/Background.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
       {/* Fixed Header */}
@@ -85,7 +91,7 @@ const Account = () => {
             sx={{ width: '100%', fontWeight: 600, mt: 2, background: 'white', color: 'red', borderColor: 'red' }}
             onClick={() => {
               localStorage.clear();
-              navigate('/welcome');
+              navigate('/');
             }}
           >
             Logout
