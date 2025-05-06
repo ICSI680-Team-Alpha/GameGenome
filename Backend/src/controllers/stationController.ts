@@ -43,18 +43,24 @@ export const getAllStations = async (
   next: NextFunction
 ) => {
   try {
+    // Get the user ID from the authenticated request
     const userID = req.user?.id;
     if (!userID) {
       return next(new AppError('User must be authenticated to view stations', 401));
     }
 
-    const stations = await Station.find({ userID }).sort('-createdAt');
+    console.log('Backend: Getting stations for user:', userID);
+    // Only find stations that belong to this user
+    const stations = await Station.find({ userID: userID }).sort('-timestamp');
+    console.log('Backend: Found stations:', stations);
+    
     res.status(200).json({
       status: 'success',
       results: stations.length,
       data: stations
     });
   } catch (error) {
+    console.error('Backend: Error getting stations:', error);
     next(error);
   }
 };
