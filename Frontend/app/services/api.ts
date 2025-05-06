@@ -227,3 +227,21 @@ export const getUserById = async (id: string) => {
   const response = await axios.get(`/api/users/${id}`);
   return response.data.data;
 }; 
+export interface GameFavorite {
+  id: string;
+  gameId: string;
+  rating: 'positive' | 'negative';
+  Genre?:string;
+  gameData: {
+    name: string;
+    image?: string;
+  };
+}
+export const getFavorites = async (): Promise<GameFavorite[]> => {
+  const response = await axios.get(`${API_URL}/favorites`);
+  return response.data;
+};
+
+export const removeFavorite = async (gameId: string) => {
+  await axios.patch(`${API_URL}/favorites/${gameId}`);
+};

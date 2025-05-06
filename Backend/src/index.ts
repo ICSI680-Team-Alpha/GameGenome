@@ -12,6 +12,7 @@ import { userRoutes } from './routes/userRoutes';
 import { errorHandler } from './middleware/errorHandler';
 import { config } from './config';
 import { connectDB } from './db/mongoose';
+import { favoriteRoute } from './routes/favoriteRoute';
 
 // Load environment variables
 dotenv.config();
@@ -35,6 +36,7 @@ app.use('/api/quizzes', quizRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/media', steamMediaRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/favorite',favoriteRoute);
 
 // Error handling
 app.use(errorHandler);
