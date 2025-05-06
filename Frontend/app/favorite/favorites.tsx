@@ -3,35 +3,73 @@ import { useState, useEffect } from 'react';
 import { TextField, Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faArrowLeft, faUser, faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+
+interface Game {
+  AppID: number;
+  Name: string;
+  HeaderImage: string;
+  Genres: string;
+}
+
+interface Rating {
+  GameID: string;
+  RatingType: 'positive' | 'negative';
+}
 
 const FavoritesPage = () => {
-const navigate = useNavigate();
-const [favoriteGames, setFavoriteGames] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const [games, setGames] = useState<Game[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const userId = localStorage.getItem('userId');
 
-useEffect(() => {
-  if (!localStorage.getItem('userId')) {
-    navigate('/');
-  }
-}, [navigate]);
+  useEffect(() => {
+    if (!userId) navigate('/');
+    
+    const fetchGames = async () => {
+      try {
+        const feedbackRes = await axios.get(`http://54.87.3.247:8000/api/v1/game_feedback?userId=${userId}`);
+        const positiveIds = feedbackRes.data
+          .flatMap((f: any) => f.rating)
+          .filter((r: Rating) => r.RatingType === 'positive')
+          .map((r: Rating) => parseInt(r.GameID));
 
-useEffect(() => {
-  const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-  setFavoriteGames(storedFavorites);
-}, []);
+        if (positiveIds.length > 0) {
+          const gamesRes = await axios.post(`http://54.87.3.247:8000/api/v1/games`, { gameIds: positiveIds });
+          const formattedGames = gamesRes.data.map((g: any) => ({
+            AppID: g.AppID,
+            Name: g.Name,
+            HeaderImage: g.HeaderImage || '/Images/placeholder.png',
+            Genres: g.Genres || ''
+          }));
+          setGames(formattedGames);
+          localStorage.setItem('favorites', JSON.stringify(formattedGames));
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        const stored = JSON.parse(localStorage.getItem('favorites') || '[]');
+        setGames(stored);
+      }
+    };
 
-const handleRemoveFavorite = async (gameId: number) => {
-  try {
-    // Remove from localStorage
-    const updatedFavorites = favoriteGames.filter(game => game.id !== gameId);
-    setFavoriteGames(updatedFavorites);
-    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-    // Optionally, also call backend if needed
-  } catch (error) {
-    console.error('Error removing favorite:', error);
-    alert('Failed to remove favorite. Please try again.');
-  }
-};
+    fetchGames();
+  }, [userId, navigate]);
 
+  const handleRemoveFavorite = async (gameId: number) => {
+    try {
+      await axios.patch(`http://54.87.3.247:8000/api/v1/game_feedback`, {
+        userId,
+        gameId,
+        ratingType: 'negative'
+      });
+      const updated = games.filter(g => g.AppID !== gameId);
+      setGames(updated);
+      localStorage.setItem('favorites', JSON.stringify(updated));
+    } catch (error) {
+      console.error('Remove error:', error);
+      alert('Failed to remove favorite');
+    }
+  };
 const handleBackClick = () => {
   if (window.history.length > 2) {
     navigate(-1);
@@ -107,6 +145,8 @@ return (
         <TextField
           variant="outlined"
           placeholder="Search games..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           sx={{
             width: '40%',
             backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -125,16 +165,15 @@ return (
           }}
         />
       </Box>
-      <div className="game-grid">
         <Grid container spacing={4}>
-          {favoriteGames.length === 0 ? (
+          {games.length === 0 ? (
             <Typography variant="h6" color="textSecondary" sx={{ width: '100%', textAlign: 'center', mt: 4 }}>
               No favorite games yet.
             </Typography>
-          ) : favoriteGames.map((game) => (
+          ) : games.map((game) => (
             <Card
-              key={game.id}
-              onClick={() => gamePreviewPath(game.id)}
+              key={game.AppID}
+              onClick={() => gamePreviewPath(game.AppID)}
               sx={{
                 height: '100%',
                 display: 'flex',
@@ -148,21 +187,22 @@ return (
               }}
             >
               <CardMedia
-                component="img"
-                image={game.image}
-                alt={game.title}
-                sx={{ height: 200, width:200, objectFit: 'cover' }}
-              />
+                    component="img"
+                    height="200"
+                    image={game.HeaderImage}
+                    alt={game.Name}
+                    className="game-image"
+                  />
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold' }}>
-                  {game.title}
+                  {game.Name}
                 </Typography>
                 <IconButton 
                   aria-label="remove from favorites" 
                   sx={{ color: 'red' }}
                   onClick={e => {
                     e.stopPropagation();
-                    handleRemoveFavorite(game.id);
+                    handleRemoveFavorite(game.AppID);
                   }}
                 >
                   <FontAwesomeIcon icon={faHeart} />
@@ -171,7 +211,7 @@ return (
             </Card>
           ))}
         </Grid>
-      </div>
+    
     </Container>
   </Box>
 );
