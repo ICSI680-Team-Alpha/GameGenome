@@ -45,8 +45,10 @@ const Stations = () => {
   const [newStationName, setNewStationName] = useState('');
   
   useEffect(() => {
-    if (!localStorage.getItem('userId')) {
-      navigate('/');
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (!token || !userId) {
+      navigate('/login');
     }
   }, [navigate]);
   

@@ -2,6 +2,7 @@ import './logIn.css';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../services/api';
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -25,33 +26,31 @@ const LogIn = () => {
     console.log('Attempting login with:', formData);
 
     try {
-      const response = await fetch('http://54.87.3.247:5000/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await loginUser(formData);
+      console.log('Login response:', response);
 
-      console.log('Response status:', response.status);
-      const data = await response.json();
-      console.log('Response data:', data);
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+      if (!response.data || !response.data.token || !response.data.user) {
+        throw new Error('Invalid response from server');
       }
 
-      // Store user data
-      localStorage.setItem('token', data.token || '');
-      localStorage.setItem('userData', JSON.stringify(data.data || {}));
-      localStorage.setItem('userId', data.data._id);
+      // Store token and user data
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userData', JSON.stringify(response.data.user));
+      localStorage.setItem('userId', response.data.user._id);
       
       console.log('Login successful, navigating to /Stations');
-      // Force navigation
-      window.location.href = '/Stations';
+      // Use React Router navigation
+      navigate('/Stations', { replace: true });
     } catch (err) {
       console.error('Login error:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred during login');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'object' && err !== null && 'response' in err) {
+        const axiosError = err as { response?: { data?: { message?: string } } };
+        setError(axiosError.response?.data?.message || 'An error occurred during login');
+      } else {
+        setError('An unexpected error occurred during login');
+      }
     }
   };
 
