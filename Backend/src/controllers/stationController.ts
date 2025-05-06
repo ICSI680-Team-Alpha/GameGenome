@@ -2,14 +2,30 @@ import { Request, Response, NextFunction } from 'express';
 import { Station } from '../models/Station';
 import { AppError } from '../middleware/errorHandler';
 
+// Define interface for authenticated request
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+  };
+}
+
 export const createStation = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    // Ensure userID is set from the authenticated user
+    const userID = req.user?.id;
+    if (!userID) {
+      return next(new AppError('User must be authenticated to create a station', 401));
+    }
+
     console.log('Backend: Creating station with data:', req.body);
-    const station = await Station.create(req.body);
+    const station = await Station.create({
+      ...req.body,
+      userID
+    });
     console.log('Backend: Station created successfully:', station);
     res.status(201).json({
       status: 'success',
@@ -27,7 +43,12 @@ export const getAllStations = async (
   next: NextFunction
 ) => {
   try {
-    const stations = await Station.find().sort('-createdAt');
+    const userID = req.user?.id;
+    if (!userID) {
+      return next(new AppError('User must be authenticated to view stations', 401));
+    }
+
+    const stations = await Station.find({ userID }).sort('-createdAt');
     res.status(200).json({
       status: 'success',
       results: stations.length,
@@ -44,7 +65,12 @@ export const getStation = async (
   next: NextFunction
 ) => {
   try {
-    const station = await Station.findById(req.params.id);
+    const userID = req.user?.id;
+    if (!userID) {
+      return next(new AppError('User must be authenticated to view stations', 401));
+    }
+
+    const station = await Station.findOne({ _id: req.params.id, userID });
     
     if (!station) {
       return next(new AppError('No station found with that ID', 404));
@@ -65,8 +91,13 @@ export const updateStation = async (
   next: NextFunction
 ) => {
   try {
-    const station = await Station.findByIdAndUpdate(
-      req.params.id,
+    const userID = req.user?.id;
+    if (!userID) {
+      return next(new AppError('User must be authenticated to update stations', 401));
+    }
+
+    const station = await Station.findOneAndUpdate(
+      { _id: req.params.id, userID },
       req.body,
       {
         new: true,
@@ -93,7 +124,12 @@ export const deleteStation = async (
   next: NextFunction
 ) => {
   try {
-    const station = await Station.findByIdAndDelete(req.params.id);
+    const userID = req.user?.id;
+    if (!userID) {
+      return next(new AppError('User must be authenticated to delete stations', 401));
+    }
+
+    const station = await Station.findOneAndDelete({ _id: req.params.id, userID });
 
     if (!station) {
       return next(new AppError('No station found with that ID', 404));
