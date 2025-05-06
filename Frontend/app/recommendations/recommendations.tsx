@@ -215,12 +215,12 @@ const Recommendations = () => {
                   </Typography>
                   <Box display="flex" justifyContent="flex-end" mt={1}>
                     <Tooltip title="Like">
-                      <IconButton onClick={() => handleLike(game.id)}>
+                      <IconButton onClick={() => handleLike(game.id)} sx={{ color: '#4CAF50' }}>
                         <FontAwesomeIcon icon={faThumbsUp} />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Dislike">
-                      <IconButton onClick={() => handleDislike()}>
+                      <IconButton onClick={() => handleDislike()} sx={{ color: '#F44336' }}>
                         <FontAwesomeIcon icon={faThumbsDown} />
                       </IconButton>
                     </Tooltip>
