@@ -94,6 +94,10 @@
   }
   
   .games-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
     max-width: 1200px;
     margin: 2rem auto !important;
     padding: 0 1.5rem;

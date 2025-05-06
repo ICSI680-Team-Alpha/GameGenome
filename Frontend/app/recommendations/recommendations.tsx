@@ -12,7 +12,8 @@ import {
   IconButton,
   Tooltip,
   CircularProgress,
-  Grid
+  Grid,
+  Snackbar
 } from '@mui/material';
 import './recommendations.css';
 import AppHeader, { HEADER_HEIGHT } from '../components/AppHeader';
@@ -22,7 +23,9 @@ import {
   faThumbsUp, 
   faThumbsDown, 
   faBookmark,
-  faRotate
+  faRotate,
+  faUser,
+  faHeart
 } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
@@ -49,6 +52,8 @@ const Recommendations = () => {
   const [recommendations, setRecommendations] = useState<Game[]>([]);
   const [showNewStationMessage, setShowNewStationMessage] = useState(isNewStation);
   const [userId, setUserId] = useState<string | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
@@ -110,11 +115,25 @@ const Recommendations = () => {
   };
 
   const handleLike = (gameId: string) => {
-    console.log(`Liked game: ${gameId}`);
+    const likedGame = recommendations.find(g => g.id === gameId);
+    if (!likedGame) return;
+    // Get current favorites from localStorage
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    // Add if not already in favorites
+    if (!favorites.some((g: any) => g.id === likedGame.id)) {
+      favorites.push(likedGame);
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      setSnackbarMessage(`${likedGame.title} added to favorites!`);
+      setSnackbarOpen(true);
+    } else {
+      setSnackbarMessage(`${likedGame.title} is already in favorites!`);
+      setSnackbarOpen(true);
+    }
   };
 
   const handleDislike = (gameId: string) => {
-    console.log(`Disliked game: ${gameId}`);
+    setSnackbarMessage('Disliked!');
+    setSnackbarOpen(true);
   };
 
   const handleSave = (gameId: string) => {
@@ -179,6 +198,25 @@ const Recommendations = () => {
             </Tooltip>
           </Box>
         </Box>
+        {/* Custom Header (like Favorites) */}
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1rem',
+        }}>
+          <Box sx={{ width: 250, height: 80 }}>
+            <img src="/Images/LOGO.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          </Box>
+          <Box>
+            <Button variant="contained" onClick={() => navigate('/account')} sx={{ color: 'black', background: 'white', mr: 1 }}>
+              <FontAwesomeIcon icon={faUser} /> Account
+            </Button>
+            <Button variant="contained" onClick={() => navigate('/favorites')} sx={{ color: 'black', background: 'white' }}>
+              <FontAwesomeIcon icon={faHeart} /> Favorite Games
+            </Button>
+          </Box>
+        </Box>
         {loading ? (
           <Box className="loading-container">
             <CircularProgress size={60} />
@@ -219,12 +257,30 @@ const Recommendations = () => {
                     >
                       {game.description}
                     </Typography>
+                    <Box display="flex" justifyContent="flex-end" mt={1}>
+                      <Tooltip title="Like">
+                        <IconButton onClick={() => handleLike(game.id)} color="primary">
+                          <FontAwesomeIcon icon={faThumbsUp} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Dislike">
+                        <IconButton onClick={() => handleDislike(game.id)} color="secondary">
+                          <FontAwesomeIcon icon={faThumbsDown} />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
         )}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={2000}
+          onClose={() => setSnackbarOpen(false)}
+          message={snackbarMessage}
+        />
       </div>
     </div>
   );
