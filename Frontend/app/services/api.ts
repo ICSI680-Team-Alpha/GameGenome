@@ -29,9 +29,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
+      // Clear token and user data
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      localStorage.removeItem('userData');
+      localStorage.removeItem('userId');
+      // Let the component handle the navigation
+      return Promise.reject(new Error('Authentication required'));
     }
     return Promise.reject(error);
   }
@@ -300,7 +303,20 @@ export const loginUser = async (credentials: LoginCredentials): Promise<LoginRes
     console.log('Frontend: Attempting login with:', credentials);
     const response = await api.post('/users/login', credentials);
     console.log('Frontend: Login response:', response.data);
-    return response.data;
+    
+    // Handle the response structure
+    if (response.data.status === 'success') {
+      return {
+        status: response.data.status,
+        message: response.data.message,
+        data: {
+          user: response.data.data.user,
+          token: response.data.data.token
+        }
+      };
+    } else {
+      throw new Error(response.data.message || 'Login failed');
+    }
   } catch (error) {
     console.error('Frontend: Login error:', error);
     throw error;
