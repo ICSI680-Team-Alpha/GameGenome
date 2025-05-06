@@ -8,21 +8,22 @@ import {
   CardContent, 
   CardMedia, 
   Rating, 
-  Tooltip,
-  IconButton,
-  CircularProgress,
-  Grid,
-  Snackbar
+  Tooltip, 
+  IconButton, 
+  CircularProgress, 
+  Grid, 
+  Snackbar 
 } from '@mui/material';
-import './recommendations.css';
 import AppHeader, { HEADER_HEIGHT } from '../components/AppHeader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
+  faArrowLeft, 
   faThumbsUp, 
   faThumbsDown, 
-  faRotate
+  faRotate 
 } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import './recommendations.css';
 
 interface Game {
   id: string;
@@ -59,13 +60,16 @@ const Recommendations = () => {
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
     setUserId(storedUserId);
+
     if (stationNameFromUrl) {
       setStationName(stationNameFromUrl);
     }
+
     if (!stationId || !storedUserId) {
       setLoading(false);
       return;
     }
+
     setLoading(true);
     axios.get(`http://54.87.3.247:8000/api/v1/get_recommendation/${stationId}?n_recommendations=10`)
       .then(async res => {
@@ -111,6 +115,10 @@ const Recommendations = () => {
       });
   }, [stationId, stationNameFromUrl]);
 
+  const handleBack = () => {
+    navigate('/Stations');
+  };
+
   const handleLike = (gameId: string) => {
     const likedGame = recommendations.find(g => g.id === gameId);
     if (!likedGame) return;
@@ -127,7 +135,7 @@ const Recommendations = () => {
     }
   };
 
-  const handleDislike = (gameId: string) => {
+  const handleDislike = () => {
     setSnackbarMessage('Disliked!');
     setSnackbarOpen(true);
   };
@@ -143,93 +151,93 @@ const Recommendations = () => {
   return (
     <div className="recommendations-container">
       <AppHeader />
-      <div style={{ marginTop: HEADER_HEIGHT + 32 }}>
-        <Typography variant="h4" align="center" className="recommendations-title">
-          Recommendations for {stationName}
-        </Typography>
 
-        {showNewStationMessage && (
-          <div className="new-station-alert">
-            <Box className="alert-content">
-              <Typography variant="body1">
-                <strong>Station Created!</strong> Your new "{stationName}" station is ready with personalized game recommendations.
-              </Typography>
-              <Button 
-                variant="text" 
-                size="small" 
-                onClick={dismissNewStationMessage}
-                sx={{ color: 'white' }}
-              >
-                Dismiss
-              </Button>
-            </Box>
-          </div>
-        )}
-
-        <Box display="flex" justifyContent="center" mt={2}>
-          <Button variant="outlined" color="primary" onClick={handleRefresh}>
-            <FontAwesomeIcon icon={faRotate} style={{ marginRight: 8 }} />
-            Refresh Recommendations
-          </Button>
+      <div className="recommendations-header">
+        <Box className="header-content">
+          <IconButton onClick={handleBack} className="back-button">
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </IconButton>
+          <Typography variant="h4" className="recommendations-title">
+            Recommendations for {stationName}
+          </Typography>
+          <IconButton onClick={handleRefresh} className="refresh-button">
+            <FontAwesomeIcon icon={faRotate} />
+          </IconButton>
         </Box>
-
-        {loading ? (
-          <Box className="loading-container">
-            <CircularProgress size={60} />
-            <Typography variant="h6" className="loading-text">
-              Loading your personalized recommendations...
-            </Typography>
-          </Box>
-        ) : (
-          <Grid container spacing={3} className="games-grid">
-            {recommendations.map((game) => (
-              <Grid key={game.id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
-                <Card className="game-card">
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={game.image}
-                    alt={game.title}
-                    className="game-image"
-                  />
-                  <Box className="match-score">
-                    <Typography variant="body2">{game.id}</Typography>
-                  </Box>
-                  <CardContent className="game-content">
-                    <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                      <Typography variant="h6" component="h2" className="game-title">
-                        {game.title}
-                      </Typography>
-                      <Rating value={game.rating} precision={0.1} readOnly size="small" />
-                    </Box>
-                    <Typography variant="body2" color="textSecondary" className="game-description">
-                      {game.description}
-                    </Typography>
-                    <Box display="flex" justifyContent="flex-end" mt={1}>
-                      <Tooltip title="Like">
-                        <IconButton onClick={() => handleLike(game.id)} color="primary">
-                          <FontAwesomeIcon icon={faThumbsUp} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Dislike">
-                        <IconButton onClick={() => handleDislike(game.id)} color="secondary">
-                          <FontAwesomeIcon icon={faThumbsDown} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={2000}
-          onClose={() => setSnackbarOpen(false)}
-          message={snackbarMessage}
-        />
       </div>
+
+      {showNewStationMessage && (
+        <div className="new-station-alert">
+          <Box className="alert-content">
+            <Typography variant="body1">
+              <strong>Station Created!</strong> Your new "{stationName}" station is ready with personalized recommendations.
+            </Typography>
+            <Button 
+              variant="text" 
+              size="small" 
+              onClick={dismissNewStationMessage}
+              sx={{ color: 'white' }}
+            >
+              Dismiss
+            </Button>
+          </Box>
+        </div>
+      )}
+
+      {loading ? (
+        <Box className="loading-container">
+          <CircularProgress size={60} />
+          <Typography variant="h6" className="loading-text">
+            Loading your personalized recommendations...
+          </Typography>
+        </Box>
+      ) : (
+        <Grid container spacing={3} className="games-grid">
+          {recommendations.map((game) => (
+            <Grid key={game.id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
+              <Card className="game-card">
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={game.image}
+                  alt={game.title}
+                  className="game-image"
+                />
+                <Box className="match-score">
+                  <Typography variant="body2">{game.id}</Typography>
+                </Box>
+                <CardContent className="game-content">
+                  <Typography variant="h6" className="game-title">
+                    {game.title}
+                  </Typography>
+                  <Typography variant="body2" className="game-description">
+                    {game.description}
+                  </Typography>
+                  <Box display="flex" justifyContent="flex-end" mt={1}>
+                    <Tooltip title="Like">
+                      <IconButton onClick={() => handleLike(game.id)}>
+                        <FontAwesomeIcon icon={faThumbsUp} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Dislike">
+                      <IconButton onClick={() => handleDislike()}>
+                        <FontAwesomeIcon icon={faThumbsDown} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+      />
     </div>
   );
 };
