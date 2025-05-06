@@ -224,8 +224,13 @@ export const getAllMedia = async (): Promise<SteamMedia[]> => {
 };
 
 export const getUserById = async (id: string) => {
-  const response = await axios.get(`/api/users/${id}`);
-  return response.data.data;
+  const response = await axios.get(`${API_URL}/users/${id}`);
+  return response.data;
+};
+
+export const updateUserById = async (id: string, data: { Username?: string; Email?: string }) => {
+  const response = await axios.patch(`${API_URL}/users/${id}`, data);
+  return response.data;
 };
 
 export const getGameDetails = async (appId: number): Promise<Game> => {
