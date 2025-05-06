@@ -53,6 +53,13 @@ const Account = () => {
       }}>
         <img src="/Images/LOGO.png" alt="GameGenome Logo" style={{ height: 60 }} />
         <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="outlined"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
+            onClick={() => navigate('/Stations')}
+          >
+            Stations
+          </Button>
           <Button variant="outlined" sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate('/Account')}>
             <FontAwesomeIcon icon={faUser} />
           </Button>

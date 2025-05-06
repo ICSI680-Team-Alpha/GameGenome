@@ -64,6 +64,11 @@ return (
       </Box>
       <Box>
         <Button variant="contained" 
+                onClick={() => navigate('/Stations')}
+                sx={{ color: 'black', background: 'white', mr: 1 }}>
+          Stations
+        </Button>
+        <Button variant="contained" 
                 onClick={() => navigate('/account')}
                 sx={{ color: 'black', background: 'white', mr: 1 }}>
           <FontAwesomeIcon icon={faUser} />
