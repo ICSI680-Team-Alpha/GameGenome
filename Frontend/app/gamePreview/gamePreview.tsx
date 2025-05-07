@@ -23,7 +23,7 @@ interface GameData {
   reviews: Review[];
 }
 
-const RAWG_API_KEY = 'YOUR_RAWG_API_KEY_HERE'; // Replace this with your actual key
+const RAWG_API_KEY = '4941d5616f274296a303eeb26f58bdab'; // Replace this with your actual key
 
 const GamePreview: React.FC = () => {
   const { gameSlug } = useParams<{ gameSlug: string }>();
