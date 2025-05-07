@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import type { Route } from "./+types/root";
 import "./app.css";
 
-// Import route components
+
 import Welcome from "./welcome/welcome";
 import Login from "./routes/logInRoute";
 import Signup from "./routes/signUpRoute";
@@ -54,7 +54,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Client-side only component to prevent hydration issues
+
 function ClientOnly({ children }: { children: React.ReactNode }) {
   const [isClient, setIsClient] = useState(false);
 

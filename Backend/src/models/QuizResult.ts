@@ -8,7 +8,7 @@ const quizResultSchema = new mongoose.Schema({
   score: { type: Number, required: true },
   totalQuestions: { type: Number, required: true },
   correctAnswers: { type: Number, required: true },
-  timeTaken: { type: Number, required: true }, // in seconds
+  timeTaken: { type: Number, required: true }, 
   completed: { type: Boolean, default: true },
   timestamp: { type: Date, default: Date.now }
 });

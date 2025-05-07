@@ -21,11 +21,9 @@ useEffect(() => {
 
 const handleRemoveFavorite = async (gameId: number) => {
   try {
-    // Remove from localStorage
     const updatedFavorites = favoriteGames.filter(game => game.id !== gameId);
     setFavoriteGames(updatedFavorites);
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-    // Optionally, also call backend if needed
   } catch (error) {
     console.error('Error removing favorite:', error);
     alert('Failed to remove favorite. Please try again.');

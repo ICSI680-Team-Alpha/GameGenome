@@ -26,7 +26,7 @@ const stationSchema = new mongoose.Schema({
   },
   requirements: {
     minScore: { type: Number, default: 0 },
-    prerequisites: [{ type: Number }] // IDs of stations that must be completed first
+    prerequisites: [{ type: Number }] 
   },
   isActive: { type: Boolean, default: true },
   timestamp: { type: Date, default: Date.now }
@@ -35,18 +35,18 @@ const stationSchema = new mongoose.Schema({
   collection: 'stations'
 });
 
-// Add pre-save hook to log the station data
+
 stationSchema.pre('save', function(next) {
   console.log('Station model: Saving station with data:', JSON.stringify(this.toObject(), null, 2));
   next();
 });
 
-// Add post-save hook to verify the save
+
 stationSchema.post('save', function(doc) {
   console.log('Station model: Successfully saved station:', doc.stationID);
 });
 
-// Add error handling middleware
+
 stationSchema.post('save', function(error: Error, doc: mongoose.Document, next: (error?: Error) => void) {
   if (error) {
     console.error('Station model: Error saving station:', error);

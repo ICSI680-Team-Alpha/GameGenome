@@ -28,12 +28,12 @@ const isArrayCategory = (category: QuizCategory): category is PreferenceCategory
   return ['genre', 'platform', 'gameplay', 'story', 'graphics'].includes(category);
 };
 
-// Get all active quizzes
+
 export const getQuizzes = catchAsync(async (req: Request, res: Response) => {
   const quizzes = await Quiz.find();
   console.log('Raw quiz data from database:', JSON.stringify(quizzes, null, 2));
   
-  // Log each option's imageUrl
+  
   quizzes.forEach(quiz => {
     console.log(`Quiz ${quiz.quizID} options:`);
     quiz.options.forEach(option => {
@@ -48,7 +48,7 @@ export const getQuizzes = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// Save quiz response
+
 export const saveQuizResponse = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   console.log('=== Quiz Response Controller ===');
   console.log('Request body:', JSON.stringify(req.body, null, 2));
@@ -72,7 +72,7 @@ export const saveQuizResponse = catchAsync(async (req: Request, res: Response, n
       responseCount: responses.length
     });
 
-    // Create new quiz response
+    
     const quizResponse = await QuizResponse.create({
       userID,
       stationID,
@@ -92,7 +92,7 @@ export const saveQuizResponse = catchAsync(async (req: Request, res: Response, n
   }
 });
 
-// Get quiz response by station ID
+
 export const getQuizResponseByStation = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { stationId } = req.params;
   
@@ -108,7 +108,7 @@ export const getQuizResponseByStation = catchAsync(async (req: Request, res: Res
   });
 });
 
-// Get quiz response by user ID
+
 export const getQuizResponsesByUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.params;
   

@@ -45,14 +45,14 @@ const quizResponseSchema = new Schema({
   collection: 'quizResponses'
 });
 
-// Add indexes for efficient querying
+
 quizResponseSchema.index({ userID: 1, stationID: 1 });
 quizResponseSchema.index({ createdAt: 1 });
 
-// Create the model with explicit collection name
+
 const QuizResponseModel = mongoose.model<IQuizResponse>('QuizResponse', quizResponseSchema, 'quizResponses');
 
-// Add logging to verify collection name
+
 console.log('QuizResponse model collection name:', QuizResponseModel.collection.name);
 
 export const QuizResponse = QuizResponseModel; 

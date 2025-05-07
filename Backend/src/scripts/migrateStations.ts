@@ -4,18 +4,18 @@ import { config } from '../config';
 
 async function migrateStations() {
   try {
-    // Connect to MongoDB
+    
     await mongoose.connect(config.mongodbUri);
     console.log('Connected to MongoDB');
 
-    // Get all stations without userID
+    
     const stations = await Station.find({ userID: { $exists: false } });
     console.log(`Found ${stations.length} stations without userID`);
 
-    // Update each station with a default userID (you should replace this with actual user IDs)
+    
     for (const station of stations) {
       console.log(`Updating station ${station._id}`);
-      station.userID = 'default-user'; // Replace with actual user ID
+      station.userID = 'default-user'; 
       await station.save();
     }
 
