@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
-import { useState, useEffect } from 'react';
-import { TextField, Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton } from '@mui/material';
+import { useState, useEffect, useMemo } from 'react';
+import { Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton, MenuItem, Select, FormControl } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faArrowLeft, faUser, faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
@@ -11,7 +11,6 @@ interface Game {
   HeaderImage: string;
   Genres: string;
 }
-
 interface Rating {
   GameID: string;
   RatingType: 'positive' | 'negative';
@@ -20,12 +19,35 @@ interface Rating {
 const FavoritesPage = () => {
   const navigate = useNavigate();
   const [games, setGames] = useState<Game[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const userId = localStorage.getItem('userId');
+  const [selectedGenre, setSelectedGenre] = useState('All');
+//Genre Options
+  const genreOptions = [
+    'All',
+    'Action',
+    'Adventure',
+    'Casual', 
+    'Puzzle',
+    'Strategy',
+    'Shooter',
+    'RPG',
+    'Racing',
+    'Violent'
+  ];
+  const filteredGames = useMemo(() => {
+    if (selectedGenre === 'All Genres') return games;
+    
+    return games.filter(game => {
+      if (!game.Genres) return false;
+      const gameGenres = game.Genres.split(',')
+        .map(g => g.trim().toLowerCase());
+      
+      return gameGenres.includes(selectedGenre.toLowerCase());
+    });
+  }, [games, selectedGenre]);
 
   useEffect(() => {
     if (!userId) navigate('/');
-
     const fetchGames = async () => {
       try {
         const feedbackRes = await axios.get(`http://54.87.3.247:8000/api/v1/game_feedback?userId=${userId}`);
@@ -54,6 +76,7 @@ const FavoritesPage = () => {
 
     fetchGames();
   }, [userId, navigate]);
+  
 
   const handleRemoveFavorite = async (gameId: number) => {
     try {
@@ -77,10 +100,56 @@ const FavoritesPage = () => {
       navigate('/Stations');
     }
   };
-  const gamePreviewPath = (gameId: number): void => {
-    navigate(`/gamePreview/${gameId}`);
-  }
-
+  const genreFilter = (
+    <FormControl sx={{ minWidth: 120, ml: 2 }}>
+      <Select
+        sx={{
+          alignItems: 'right',
+          color: 'white',
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'white',
+          },
+          '& .MuiSvgIcon-root': {
+            color: 'white',
+          },
+          height: '56px',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        }}
+        value={selectedGenre}
+        onChange={(e) => {
+          setSelectedGenre(e.target.value as string);
+          console.log('Selected genre:', e.target.value); 
+        }}
+        displayEmpty
+        inputProps={{ 'aria-label': 'Select genre' }}
+      >
+        <MenuItem 
+          sx={{
+            backgroundColor: 'white',
+            color: 'black',
+            fontWeight: 'bold'
+          }} 
+          value="All"
+        >
+          All Genres
+        </MenuItem>
+        {genreOptions.filter(g => g !== 'All').map((genre) => (
+          <MenuItem 
+            key={genre} 
+            value={genre}
+            sx={{
+              color: 'black',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.1)'
+              }
+            }}
+          >
+            {genre}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
   return (
     <Box
       sx={{
@@ -143,36 +212,16 @@ const FavoritesPage = () => {
           >
             Back
           </Button>
-          <TextField
-            variant="outlined"
-            placeholder="Search games..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{
-              width: '40%',
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              borderRadius: 1,
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'transparent',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'primary.main',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'primary.main',
-                },
-              },
-            }}
-          />
+          {genreFilter}
+          
         </Box>
         <Grid container spacing={4}>
-          {games.length === 0 ? (
-            <Typography variant="h6" color="textSecondary" sx={{ width: '100%', textAlign: 'center', mt: 4 }}>
+          {filteredGames.length === 0 ? (
+            <Typography variant="h6" color="white" sx={{ width: '100%', textAlign: 'center', mt: 4 }}>
               No favorite games yet
             </Typography>
           ) : (
-            games.map((game) => (
+            filteredGames.map((game) => (
               <Grid item key={game.AppID} xs={12} sm={6} md={4} lg={3}>
                 <Card
                   sx={{

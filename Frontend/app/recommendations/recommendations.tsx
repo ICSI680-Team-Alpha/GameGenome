@@ -110,6 +110,13 @@ const Recommendations = () => {
   };
 
   const handleLike = (gameId: string) => {
+    axios.post('http://your-api/game_feedback', {
+      userId: localStorage.getItem('userId'),
+      gameId,
+      ratingType: 'positive'
+    }).catch(error => {
+      console.error('Silent failure:', error); 
+    });
     console.log(`Liked game: ${gameId}`);
   };
 
