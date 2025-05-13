@@ -6,7 +6,7 @@ import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { faHome } from '@fortawesome/free-solid-svg-icons';
 import { Box, Button, TextField, Typography, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { getUserById } from '../services/api';
+import { getUserById, updateUserById } from '../services/api';
 
 const HEADER_HEIGHT = 100;
 
@@ -14,15 +14,49 @@ const Account = () => {
   const [selectedOption, setSelectedOption] = useState<'Profile' | 'Password'>('Profile');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMsg, setPasswordMsg] = useState<string | null>(null);
+
+  const handleSavePassword = async () => {
+    setSaving(true);
+    setPasswordMsg(null);
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordMsg('Please fill in all fields.');
+      setSaving(false);
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMsg('New passwords do not match.');
+      setSaving(false);
+      return;
+    }
+    const userId = localStorage.getItem('userId');
+    try {
+      if (userId) {
+        await updateUserById(userId, { CurrentPassword: currentPassword, Password: newPassword });
+        setPasswordMsg('Password updated!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      }
+    } catch (err) {
+      setPasswordMsg('Failed to update password.');
+    }
+    setSaving(false);
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         const user = await getUserById(userId);
-        setUsername(user.Username);
-        setEmail(user.Email);
+        setUsername(user.data.Username);
+        setEmail(user.data.Email);
       }
     };
     fetchUser();
@@ -33,6 +67,22 @@ const Account = () => {
       navigate('/');
     }
   }, [navigate]);
+
+  // Update handleSaveProfile to update both username and email
+  const handleSaveProfile = async () => {
+    setSaving(true);
+    setSaveMsg(null);
+    const userId = localStorage.getItem('userId');
+    try {
+      if (userId) {
+        await updateUserById(userId, { Username: username, Email: email });
+        setSaveMsg('Profile updated!');
+      }
+    } catch (err) {
+      setSaveMsg('Failed to update profile.');
+    }
+    setSaving(false);
+  };
 
   return (
     <div className="main-container" style={{ minHeight: '100vh', backgroundImage: "url('/Images/Background.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
@@ -81,7 +131,7 @@ const Account = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        mt: `${HEADER_HEIGHT + 32}px`, 
+        mt: `${HEADER_HEIGHT + 32}px`,
         gap: 6
       }}>
         {/* Left Panel */}
@@ -130,7 +180,7 @@ const Account = () => {
               />
               <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Email</Typography>
               <TextField
-                placeholder="your.email@example.com"
+                placeholder="Your email"
                 variant="outlined"
                 fullWidth
                 value={email}
@@ -138,7 +188,20 @@ const Account = () => {
                 sx={{ mb: 4, input: { color: 'white' }, label: { color: 'white' }, background: 'rgba(255,255,255,0.05)' }}
                 InputLabelProps={{ style: { color: 'white' } }}
               />
-              <Button variant="contained" color="primary" sx={{ mt: 2, px: 4, fontWeight: 600, borderRadius: 2 }}>Save Changes</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, px: 4, fontWeight: 600, borderRadius: 2 }}
+                onClick={handleSaveProfile}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </Button>
+              {saveMsg && (
+                <Typography sx={{ mt: 2, color: saveMsg.includes('updated') ? 'lightgreen' : 'red' }}>
+                  {saveMsg}
+                </Typography>
+              )}
             </Box>
           )}
           {selectedOption === 'Password' && (
@@ -149,6 +212,8 @@ const Account = () => {
                 type="password"
                 variant="outlined"
                 fullWidth
+                value={currentPassword}
+                onChange={e => setCurrentPassword(e.target.value)}
                 sx={{ mb: 3, input: { color: 'white' }, label: { color: 'white' }, background: 'rgba(255,255,255,0.05)' }}
                 InputLabelProps={{ style: { color: 'white' } }}
               />
@@ -157,6 +222,8 @@ const Account = () => {
                 type="password"
                 variant="outlined"
                 fullWidth
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
                 sx={{ mb: 3, input: { color: 'white' }, label: { color: 'white' }, background: 'rgba(255,255,255,0.05)' }}
                 InputLabelProps={{ style: { color: 'white' } }}
               />
@@ -165,10 +232,25 @@ const Account = () => {
                 type="password"
                 variant="outlined"
                 fullWidth
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
                 sx={{ mb: 3, input: { color: 'white' }, label: { color: 'white' }, background: 'rgba(255,255,255,0.05)' }}
                 InputLabelProps={{ style: { color: 'white' } }}
               />
-              <Button variant="contained" color="primary" sx={{ mt: 2, px: 4, fontWeight: 600, borderRadius: 2 }}>Save Password</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, px: 4, fontWeight: 600, borderRadius: 2 }}
+                onClick={handleSavePassword}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Password'}
+              </Button>
+              {passwordMsg && (
+                <Typography sx={{ mt: 2, color: passwordMsg.includes('updated') ? 'lightgreen' : 'red' }}>
+                  {passwordMsg}
+                </Typography>
+              )}
             </Box>
           )}
         </Paper>
