@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
-import { useState, useEffect, useMemo } from 'react';
-import { Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton, MenuItem, Select, FormControl } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Button, Box, Typography, Container, Grid, Card, CardMedia, CardContent, IconButton } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faArrowLeft, faUser, faSignOutAlt, faHome } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
@@ -20,31 +20,6 @@ const FavoritesPage = () => {
   const navigate = useNavigate();
   const [games, setGames] = useState<Game[]>([]);
   const userId = localStorage.getItem('userId');
-  const [selectedGenre, setSelectedGenre] = useState('All');
-//Genre Options
-  const genreOptions = [
-    'All',
-    'Action',
-    'Adventure',
-    'Casual', 
-    'Puzzle',
-    'Strategy',
-    'Shooter',
-    'RPG',
-    'Racing',
-    'Violent'
-  ];
-  const filteredGames = useMemo(() => {
-    if (selectedGenre === 'All Genres') return games;
-    
-    return games.filter(game => {
-      if (!game.Genres) return false;
-      const gameGenres = game.Genres.split(',')
-        .map(g => g.trim().toLowerCase());
-      
-      return gameGenres.includes(selectedGenre.toLowerCase());
-    });
-  }, [games, selectedGenre]);
 
   useEffect(() => {
     if (!userId) navigate('/');
@@ -77,7 +52,6 @@ const FavoritesPage = () => {
     fetchGames();
   }, [userId, navigate]);
   
-
   const handleRemoveFavorite = async (gameId: number) => {
     try {
       await axios.patch(`http://54.87.3.247:8000/api/v1/game_feedback`, {
@@ -93,6 +67,7 @@ const FavoritesPage = () => {
       alert('Failed to remove favorite');
     }
   };
+
   const handleBackClick = () => {
     if (window.history.length > 2) {
       navigate(-1);
@@ -100,56 +75,7 @@ const FavoritesPage = () => {
       navigate('/Stations');
     }
   };
-  const genreFilter = (
-    <FormControl sx={{ minWidth: 120, ml: 2 }}>
-      <Select
-        sx={{
-          alignItems: 'right',
-          color: 'white',
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'white',
-          },
-          '& .MuiSvgIcon-root': {
-            color: 'white',
-          },
-          height: '56px',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        }}
-        value={selectedGenre}
-        onChange={(e) => {
-          setSelectedGenre(e.target.value as string);
-          console.log('Selected genre:', e.target.value); 
-        }}
-        displayEmpty
-        inputProps={{ 'aria-label': 'Select genre' }}
-      >
-        <MenuItem 
-          sx={{
-            backgroundColor: 'white',
-            color: 'black',
-            fontWeight: 'bold'
-          }} 
-          value="All"
-        >
-          All Genres
-        </MenuItem>
-        {genreOptions.filter(g => g !== 'All').map((genre) => (
-          <MenuItem 
-            key={genre} 
-            value={genre}
-            sx={{
-              color: 'black',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.1)'
-              }
-            }}
-          >
-            {genre}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
+
   return (
     <Box
       sx={{
@@ -212,16 +138,14 @@ const FavoritesPage = () => {
           >
             Back
           </Button>
-          {genreFilter}
-          
         </Box>
         <Grid container spacing={4}>
-          {filteredGames.length === 0 ? (
+          {games.length === 0 ? (
             <Typography variant="h6" color="white" sx={{ width: '100%', textAlign: 'center', mt: 4 }}>
               No favorite games yet
             </Typography>
           ) : (
-            filteredGames.map((game) => (
+            games.map((game) => (
               <Grid item key={game.AppID} xs={12} sm={6} md={4} lg={3}>
                 <Card
                   sx={{
@@ -279,7 +203,6 @@ const FavoritesPage = () => {
             ))
           )}
         </Grid>
-
       </Container>
     </Box>
   );
