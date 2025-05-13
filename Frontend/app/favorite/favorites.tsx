@@ -8,7 +8,7 @@ import axios from 'axios';
 interface Game {
   AppID: number;
   Name: string;
-  HeaderImage: string;
+  Image: string;
   Genres: string;
 }
 interface Rating {
@@ -18,7 +18,7 @@ interface Rating {
 
 const FavoritesPage = () => {
   const navigate = useNavigate();
-  const [games, setGames] = useState<Game[]>([]);
+  const [favoriteGames, setFavoriteGames] = useState<any[]>([]);
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
@@ -33,25 +33,26 @@ const FavoritesPage = () => {
 
         if (positiveIds.length > 0) {
           const gamesRes = await axios.post(`http://54.87.3.247:8000/api/v1/games`, { gameIds: positiveIds });
-          const formattedGames = gamesRes.data.map((g: any) => ({
+          const favoriteGames = gamesRes.data.map((g: any) => ({
             AppID: g.AppID,
             Name: g.Name,
-            HeaderImage: g.HeaderImage || '/Images/placeholder.png',
+            Image: g.Image || '/Images/placeholder.png',
             Genres: g.Genres || ''
           }));
-          setGames(formattedGames);
-          localStorage.setItem('favorites', JSON.stringify(formattedGames));
+          setFavoriteGames(favoriteGames);
+          localStorage.setItem('favorites', JSON.stringify(favoriteGames));
         }
       } catch (error) {
         console.error('Fetch error:', error);
         const stored = JSON.parse(localStorage.getItem('favorites') || '[]');
-        setGames(stored);
+        setFavoriteGames(stored);
+
       }
     };
 
     fetchGames();
   }, [userId, navigate]);
-  
+
   const handleRemoveFavorite = async (gameId: number) => {
     try {
       await axios.patch(`http://54.87.3.247:8000/api/v1/game_feedback`, {
@@ -59,14 +60,16 @@ const FavoritesPage = () => {
         gameId,
         ratingType: 'negative'
       });
-      const updated = games.filter(g => g.AppID !== gameId);
-      setGames(updated);
-      localStorage.setItem('favorites', JSON.stringify(updated));
+
+      const updatedFavorites = favoriteGames.filter(game => game.AppID !== gameId);
+      setFavoriteGames(updatedFavorites);
+      localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
     } catch (error) {
-      console.error('Remove error:', error);
-      alert('Failed to remove favorite');
+      console.error('Error removing favorite:', error);
+      alert('Failed to remove favorite. Please try again.');
     }
   };
+
 
   const handleBackClick = () => {
     if (window.history.length > 2) {
@@ -140,12 +143,12 @@ const FavoritesPage = () => {
           </Button>
         </Box>
         <Grid container spacing={4}>
-          {games.length === 0 ? (
+          {favoriteGames.length === 0 ? (
             <Typography variant="h6" color="white" sx={{ width: '100%', textAlign: 'center', mt: 4 }}>
               No favorite games yet
             </Typography>
           ) : (
-            games.map((game) => (
+            favoriteGames.map((game) => (
               <Grid item key={game.AppID} xs={12} sm={6} md={4} lg={3}>
                 <Card
                   sx={{
@@ -160,14 +163,16 @@ const FavoritesPage = () => {
                 >
                   <CardMedia
                     component="img"
-                    image={game.HeaderImage}
+                    image={game.Image}
                     alt={game.Name}
                     sx={{
-                      width: 'auto', 
-                      height: 200,       
-                      maxWidth: '100%',   
-                      margin: '0 auto',   
-                      display: 'block'
+                      width: 'auto',
+                      height: 200,
+                      maxWidth: '100%',
+                      margin: '0 auto',
+                      display: 'block',
+                      objectFit: 'cover',
+                      aspectRatio: '16/9'
                     }}
                   />
                   <CardContent sx={{
