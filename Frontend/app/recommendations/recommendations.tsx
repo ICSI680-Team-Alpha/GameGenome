@@ -14,6 +14,7 @@ import {
   Grid, 
   Snackbar 
 } from '@mui/material';
+// import dynamic from 'next/dynamic';
 import AppHeader, { HEADER_HEIGHT } from '../components/AppHeader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -150,21 +151,14 @@ const Recommendations = () => {
 
   return (
     <div className="recommendations-container">
-      <AppHeader />
-
-      <div className="recommendations-header">
-        <Box className="header-content">
-          <IconButton onClick={handleBack} className="back-button">
-            <FontAwesomeIcon icon={faArrowLeft} />
-          </IconButton>
-          <Typography variant="h4" className="recommendations-title">
-            Recommendations for {stationName}
-          </Typography>
-          <IconButton onClick={handleRefresh} className="refresh-button">
-            <FontAwesomeIcon icon={faRotate} />
-          </IconButton>
-        </Box>
+      <div style={{ position: 'sticky', top: 0, zIndex: 1000, background: 'white' }}>
+        <AppHeader />
       </div>
+      <Box sx={{ width: '100%', textAlign: 'center', mt: 2, mb: 2 }}>
+        <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
+          Recommendations for {stationName}
+        </Typography>
+      </Box>
 
       {showNewStationMessage && (
         <div className="new-station-alert">
