@@ -121,9 +121,19 @@ const Recommendations = () => {
   };
 
   const handleLike = (gameId: string) => {
+    axios.post('http://your-api/game_feedback', {
+      userId: localStorage.getItem('userId'),
+      gameId,
+      ratingType: 'positive'
+    }).catch(error => {
+      console.error('Silent failure:', error); 
+    });
+    
+    console.log(`Liked game: ${gameId}`);
+    
     const likedGame = recommendations.find(g => g.id === gameId);
     if (!likedGame) return;
-
+  
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     if (!favorites.some((g: any) => g.id === likedGame.id)) {
       favorites.push(likedGame);
@@ -256,6 +266,7 @@ const Recommendations = () => {
         message={snackbarMessage}
       />
     </div>
+  
   );
 };
 

@@ -6,25 +6,65 @@ import { faArrowLeft, faUser, faSignOutAlt, faHome } from '@fortawesome/free-sol
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import AppHeader from '../components/AppHeader';
 import './favorites.css';
+import axios from 'axios';
+
+interface Game {
+  AppID: number;
+  Name: string;
+  Image: string;
+  Genres: string;
+}
+interface Rating {
+  GameID: string;
+  RatingType: 'positive' | 'negative';
+}
 
 const FavoritesPage = () => {
   const navigate = useNavigate();
   const [favoriteGames, setFavoriteGames] = useState<any[]>([]);
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
-    if (!localStorage.getItem('userId')) {
-      navigate('/');
-    }
-  }, [navigate]);
+    if (!userId) navigate('/');
+    const fetchGames = async () => {
+      try {
+        const feedbackRes = await axios.get(`http://54.87.3.247:8000/api/v1/game_feedback?userId=${userId}`);
+        const positiveIds = feedbackRes.data
+          .flatMap((f: any) => f.rating)
+          .filter((r: Rating) => r.RatingType === 'positive')
+          .map((r: Rating) => parseInt(r.GameID));
 
-  useEffect(() => {
-    const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    setFavoriteGames(storedFavorites);
-  }, []);
+        if (positiveIds.length > 0) {
+          const gamesRes = await axios.post(`http://54.87.3.247:8000/api/v1/games`, { gameIds: positiveIds });
+          const favoriteGames = gamesRes.data.map((g: any) => ({
+            AppID: g.AppID,
+            Name: g.Name,
+            Image: g.Image || '/Images/placeholder.png',
+            Genres: g.Genres || ''
+          }));
+          setFavoriteGames(favoriteGames);
+          localStorage.setItem('favorites', JSON.stringify(favoriteGames));
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        const stored = JSON.parse(localStorage.getItem('favorites') || '[]');
+        setFavoriteGames(stored);
+
+      }
+    };
+
+    fetchGames();
+  }, [userId, navigate]);
 
   const handleRemoveFavorite = async (gameId: number) => {
     try {
-      const updatedFavorites = favoriteGames.filter(game => game.id !== gameId);
+      await axios.patch(`http://54.87.3.247:8000/api/v1/game_feedback`, {
+        userId,
+        gameId,
+        ratingType: 'negative'
+      });
+
+      const updatedFavorites = favoriteGames.filter(game => game.AppID !== gameId);
       setFavoriteGames(updatedFavorites);
       localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
     } catch (error) {
@@ -53,6 +93,34 @@ const FavoritesPage = () => {
         <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
           Your Favorite Games
         </Typography>
+
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<FontAwesomeIcon icon={faHome} />}
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
+            onClick={() => navigate('/Stations')}
+          >
+            Stations
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => navigate('/account')}
+          >
+            <FontAwesomeIcon icon={faUser} />
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => {
+              localStorage.clear();
+              navigate('/');
+            }}
+          >
+            <FontAwesomeIcon icon={faSignOutAlt} />
+          </Button>
+        </Box>
       </Box>
 
       <Container maxWidth="xl" sx={{ py: 4 }}>
