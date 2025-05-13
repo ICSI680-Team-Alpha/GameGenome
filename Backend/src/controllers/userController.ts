@@ -140,15 +140,36 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.params.id;
-    const update = req.body;
-    const user = await User.findByIdAndUpdate(userId, update, { new: true, runValidators: true }).select('-PasswordHash');
+    const { Password, CurrentPassword, ...otherUpdates } = req.body;
+
+    const user = await User.findById(userId);
     if (!user) {
       return next(new AppError('User not found', 404));
     }
+
+    // Handle password change securely
+    if (Password) {
+      if (!CurrentPassword) {
+        return next(new AppError('Current password is required to change password', 400));
+      }
+      const isCurrentValid = await bcrypt.compare(CurrentPassword, user.PasswordHash);
+      if (!isCurrentValid) {
+        return next(new AppError('Current password is incorrect', 401));
+      }
+      const saltRounds = 10;
+      user.PasswordHash = await bcrypt.hash(Password, saltRounds);
+    }
+
+    Object.assign(user, otherUpdates, { UpdatedAt: new Date() });
+    await user.save();
+
+    const userResponse = user.toObject();
+    delete (userResponse as any).PasswordHash;
+
     res.status(200).json({
       status: 'success',
       message: 'User updated successfully',
-      data: user
+      data: userResponse
     });
   } catch (error) {
     next(error);
