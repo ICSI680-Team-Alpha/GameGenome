@@ -1,5 +1,5 @@
-import type { Route } from "./+types/home";
-import GamePreview, { games } from "../gamePreview/gamePreview";
+import type { Route } from "../+types/home";
+import GamePreview from "../gamePreview/gamePreview";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -9,5 +9,5 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function GamePreviewRoute() {
-  return <GamePreview games={games} />;
+  return <GamePreview />;
 }

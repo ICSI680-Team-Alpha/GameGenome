@@ -167,11 +167,6 @@ const Recommendations = () => {
         </Box>
       </div>
 
-
-
-
-
-
       {showNewStationMessage && (
         <div className="new-station-alert">
           <Box className="alert-content">
@@ -201,7 +196,11 @@ const Recommendations = () => {
         <Grid container spacing={3} className="games-grid">
           {recommendations.map((game) => (
             <Grid key={game.id} sx={{ width: '100%', '@media (min-width: 600px)': { width: '50%' }, '@media (min-width: 960px)': { width: '33.33%' } }}>
-              <Card className="game-card">
+              <Card 
+                className="game-card"
+                onClick={() => navigate(`/gamePreview/${encodeURIComponent(game.title.toLowerCase().replace(/\s+/g, '-'))}`)}
+                style={{ cursor: 'pointer' }}
+              >
                 <CardMedia
                   component="img"
                   height="200"
@@ -221,12 +220,24 @@ const Recommendations = () => {
                   </Typography>
                   <Box display="flex" justifyContent="flex-end" mt={1}>
                     <Tooltip title="Like">
-                      <IconButton onClick={() => handleLike(game.id)} sx={{ color: '#4CAF50' }}>
+                      <IconButton 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLike(game.id);
+                        }} 
+                        sx={{ color: '#4CAF50' }}
+                      >
                         <FontAwesomeIcon icon={faThumbsUp} />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Dislike">
-                      <IconButton onClick={() => handleDislike()} sx={{ color: '#F44336' }}>
+                      <IconButton 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDislike();
+                        }} 
+                        sx={{ color: '#F44336' }}
+                      >
                         <FontAwesomeIcon icon={faThumbsDown} />
                       </IconButton>
                     </Tooltip>
