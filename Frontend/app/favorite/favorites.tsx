@@ -93,34 +93,6 @@ const FavoritesPage = () => {
         <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>
           Your Favorite Games
         </Typography>
-
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="contained"
-            startIcon={<FontAwesomeIcon icon={faHome} />}
-            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
-            onClick={() => navigate('/Stations')}
-          >
-            Stations
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onClick={() => navigate('/account')}
-          >
-            <FontAwesomeIcon icon={faUser} />
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onClick={() => {
-              localStorage.clear();
-              navigate('/');
-            }}
-          >
-            <FontAwesomeIcon icon={faSignOutAlt} />
-          </Button>
-        </Box>
       </Box>
 
       <Container maxWidth="xl" sx={{ py: 4 }}>
