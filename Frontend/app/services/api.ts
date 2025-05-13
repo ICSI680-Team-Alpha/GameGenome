@@ -284,7 +284,10 @@ export const getUserById = async (id: string) => {
   return response.data.data;
 };
 
-export const updateUserById = async (id: string, data: { Username?: string; Email?: string }) => {
+export const updateUserById = async (
+  id: string,
+  data: { Username?: string; Email?: string; Password?: string; CurrentPassword?: string }
+) => {
   const response = await axios.patch(`${API_URL}/users/${id}`, data);
   return response.data;
 };
