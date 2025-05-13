@@ -11,7 +11,7 @@ export const getMediaByAppId = async (
   try {
     console.log('Attempting to find media for AppID:', req.params.id);
     
-    // Add raw MongoDB query for debugging
+    
     const rawDoc = await mongoose.connection.db.collection('steam_media')
       .findOne({ AppID: parseInt(req.params.id) });
     console.log('Raw document from MongoDB:', rawDoc);
@@ -41,7 +41,7 @@ export const getAllMedia = async (
   try {
     console.log('Attempting to find all media');
     
-    // Add raw MongoDB query for debugging
+    
     const rawDocs = await mongoose.connection.db.collection('steam_media')
       .find()
       .limit(1)

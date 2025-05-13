@@ -5,19 +5,18 @@ import { SteamGame } from '../models/SteamGame';
 
 const updateFirstQuizQuestion = async () => {
   try {
-    // Connect to MongoDB
     await mongoose.connect(config.mongodbUri);
     console.log('Connected to MongoDB');
 
-    // Find 6 diverse games from steam_info
+    
     const games = await SteamGame.aggregate([
       { $match: { 
         HeaderImage: { $exists: true, $ne: null },
         Genres: { $exists: true, $ne: null },
         owners: { $exists: true, $ne: null }
       }},
-      { $sort: { owners: -1 } }, // Sort by number of owners (descending)
-      { $limit: 100 }, // Get top 100 most owned games
+      { $sort: { owners: -1 } }, 
+      { $limit: 100 }, 
       { $group: { 
         _id: "$Genres",
         games: { $push: "$$ROOT" }
@@ -25,7 +24,7 @@ const updateFirstQuizQuestion = async () => {
       { $project: {
         game: { $arrayElemAt: ["$games", 0] }
       }},
-      { $match: { 'game.HeaderImage': { $exists: true, $ne: null } } }, // Ensure game has an image
+      { $match: { 'game.HeaderImage': { $exists: true, $ne: null } } }, 
       { $limit: 6 }
     ], { allowDiskUse: true });
 
@@ -33,7 +32,7 @@ const updateFirstQuizQuestion = async () => {
       throw new Error('Not enough diverse games with images found in steam_info collection');
     }
 
-    // Create new options array - map HeaderImage to imageUrl
+    
     const newOptions = games.map(game => {
       console.log('Processing game:', {
         id: game.game.AppID,
@@ -43,11 +42,11 @@ const updateFirstQuizQuestion = async () => {
       return {
         id: game.game.AppID.toString(),
         text: game.game.Name,
-        HeaderImage: game.game.HeaderImage // Using HeaderImage consistently
+        HeaderImage: game.game.HeaderImage 
       };
     });
 
-    // Create or update the first quiz question
+    
     const firstQuizData = {
       quizID: 1,
       quizText: "Select 3 games that interest you the most:",
@@ -58,7 +57,7 @@ const updateFirstQuizQuestion = async () => {
       category: "genre"
     };
 
-    // Update or create the quiz
+    
     const result = await Quiz.updateOne(
       { quizID: 1 },
       { $set: firstQuizData },
@@ -78,5 +77,5 @@ const updateFirstQuizQuestion = async () => {
   }
 };
 
-// Run the update
+
 updateFirstQuizQuestion(); 

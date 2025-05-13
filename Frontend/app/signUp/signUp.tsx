@@ -45,7 +45,7 @@ const SignUp = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Signup successful:', data);
-        navigate('/Login'); // Redirect to login page after successful signup
+        navigate('/Login'); 
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Signup failed');

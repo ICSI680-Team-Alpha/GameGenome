@@ -8,7 +8,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
   try {
     const { Username, Email, Password } = req.body;
     
-    // Check if username or email already exists
+    
     const existingUser = await User.findOne({
       $or: [
         { Username: Username },
@@ -20,7 +20,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
       throw new AppError('Username or email already exists', 400);
     }
 
-    // Hash the password
+    
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(Password, saltRounds);
     
@@ -53,7 +53,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
       timestamp: now
     });
 
-    // Remove password hash from response
+    
     const userResponse = user.toObject();
     delete (userResponse as any).PasswordHash;
 
@@ -87,28 +87,28 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
   try {
     const { Username, Password } = req.body;
 
-    // Find user by username
+    
     const user = await User.findOne({ Username });
 
     if (!user) {
       throw new AppError('Invalid username or password', 401);
     }
 
-    // Check password
+    
     const isPasswordValid = await bcrypt.compare(Password, user.PasswordHash);
 
     if (!isPasswordValid) {
       throw new AppError('Invalid username or password', 401);
     }
 
-    // Generate JWT token
+    
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );
 
-    // Update last login
+    
     const now = new Date();
     await User.updateOne(
       { _id: user._id },
@@ -120,7 +120,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       }
     );
 
-    // Create response without password hash
+    
     const userResponse = user.toObject();
     delete (userResponse as any).PasswordHash;
 
@@ -140,15 +140,36 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.params.id;
-    const update = req.body;
-    const user = await User.findByIdAndUpdate(userId, update, { new: true, runValidators: true }).select('-PasswordHash');
+    const { Password, CurrentPassword, ...otherUpdates } = req.body;
+
+    const user = await User.findById(userId);
     if (!user) {
       return next(new AppError('User not found', 404));
     }
+
+    // Handle password change securely
+    if (Password) {
+      if (!CurrentPassword) {
+        return next(new AppError('Current password is required to change password', 400));
+      }
+      const isCurrentValid = await bcrypt.compare(CurrentPassword, user.PasswordHash);
+      if (!isCurrentValid) {
+        return next(new AppError('Current password is incorrect', 401));
+      }
+      const saltRounds = 10;
+      user.PasswordHash = await bcrypt.hash(Password, saltRounds);
+    }
+
+    Object.assign(user, otherUpdates, { UpdatedAt: new Date() });
+    await user.save();
+
+    const userResponse = user.toObject();
+    delete (userResponse as any).PasswordHash;
+
     res.status(200).json({
       status: 'success',
       message: 'User updated successfully',
-      data: user
+      data: userResponse
     });
   } catch (error) {
     next(error);

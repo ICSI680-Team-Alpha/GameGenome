@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_URL = 'http://54.87.3.247:5000/api';
 
-// Create axios instance with default config
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -10,7 +10,7 @@ const api = axios.create({
   }
 });
 
-// Add request interceptor to add auth token
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -24,23 +24,21 @@ api.interceptors.request.use(
   }
 );
 
-// Add response interceptor to handle token expiration
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear token and user data
       localStorage.removeItem('token');
       localStorage.removeItem('userData');
       localStorage.removeItem('userId');
-      // Let the component handle the navigation
       return Promise.reject(new Error('Authentication required'));
     }
     return Promise.reject(error);
   }
 );
 
-// Game interfaces
+
 export interface Game {
   _id: string;
   AppID: number;
@@ -65,7 +63,7 @@ export interface GameFeedback {
   }>;
 }
 
-// Station interfaces
+
 export interface Station {
   _id?: string;
   stationID: number;
@@ -95,7 +93,7 @@ export interface Station {
   timestamp?: Date;
 }
 
-// Quiz interfaces
+
 export interface QuizOption {
   id: string;
   text: string;
@@ -129,7 +127,7 @@ export interface QuizResponse {
   }>;
 }
 
-// Recommendation interfaces
+
 export interface Recommendation {
   _id?: string;
   userID: string;
@@ -138,7 +136,7 @@ export interface Recommendation {
   timestamp?: Date;
 }
 
-// Media interfaces
+
 export interface SteamMedia {
   _id?: string;
   AppID: number;
@@ -148,7 +146,7 @@ export interface SteamMedia {
   Movies: string | null;
 }
 
-// User interfaces
+
 export interface LoginCredentials {
   Username: string;
   Password: string;
@@ -162,7 +160,6 @@ export interface LoginResponse {
       _id: string;
       Username: string;
       Email: string;
-      // ... other user fields
     };
     token: string;
   };
@@ -287,7 +284,10 @@ export const getUserById = async (id: string) => {
   return response.data.data;
 };
 
-export const updateUserById = async (id: string, data: { Username?: string; Email?: string }) => {
+export const updateUserById = async (
+  id: string,
+  data: { Username?: string; Email?: string; Password?: string; CurrentPassword?: string }
+) => {
   const response = await axios.patch(`${API_URL}/users/${id}`, data);
   return response.data;
 };
@@ -309,7 +309,7 @@ export const loginUser = async (credentials: LoginCredentials): Promise<LoginRes
     const response = await api.post('/users/login', credentials);
     console.log('Frontend: Login response:', response.data);
     
-    // Handle the response structure
+    
     if (response.data.status === 'success') {
       return {
         status: response.data.status,

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const optionSchema = new mongoose.Schema({
   id: { type: String, required: true },
   text: { type: String, required: true },
-  HeaderImage: { type: String } // Using HeaderImage to match Steam data
+  HeaderImage: { type: String } 
 });
 
 const quizSchema = new mongoose.Schema({
@@ -27,7 +27,7 @@ const quizSchema = new mongoose.Schema({
   collection: 'quizzes'
 });
 
-// Add indexes
+
 quizSchema.index({ quizID: 1 }, { unique: true });
 
 export const Quiz = mongoose.model('quiz', quizSchema); 

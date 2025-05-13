@@ -4,7 +4,7 @@ import { Game } from '../models/Game';
 import { QuizResponse } from '../models/QuizResponse';
 import { AppError } from '../middleware/errorHandler';
 
-// Get recommendations for a user and station
+
 export const getRecommendations = async (
   req: Request,
   res: Response,
@@ -17,15 +17,14 @@ export const getRecommendations = async (
       return next(new AppError('User ID and Station ID are required', 400));
     }
     
-    // First, check if we already have recommendations for this user and station
+    
     let recommendations = await Recommendation.findOne({
       userID: userId,
       stationID: stationId
     });
     
-    // If we don't have recommendations, generate them
+    
     if (!recommendations) {
-      // Get the user's quiz responses
       const quizResponses = await QuizResponse.find({
         userID: userId,
         stationID: stationId
@@ -35,7 +34,6 @@ export const getRecommendations = async (
         return next(new AppError('No quiz responses found for this user and station', 404));
       }
       
-      // sample games as recommendations
       const sampleGames = await Game.find().limit(5);
       
       recommendations = await Recommendation.create({
@@ -54,7 +52,7 @@ export const getRecommendations = async (
   }
 };
 
-// Create recommendations for a user and station
+
 export const createRecommendations = async (
   req: Request,
   res: Response,
@@ -67,7 +65,6 @@ export const createRecommendations = async (
       return next(new AppError('User ID and Station ID are required', 400));
     }
     
-    //sample games as recommendations
     const sampleGames = await Game.find().limit(5);
     
     const recommendations = await Recommendation.create({

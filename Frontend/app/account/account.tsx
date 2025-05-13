@@ -17,7 +17,38 @@ const Account = () => {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMsg, setPasswordMsg] = useState<string | null>(null);
 
+  const handleSavePassword = async () => {
+    setSaving(true);
+    setPasswordMsg(null);
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordMsg('Please fill in all fields.');
+      setSaving(false);
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMsg('New passwords do not match.');
+      setSaving(false);
+      return;
+    }
+    const userId = localStorage.getItem('userId');
+    try {
+      if (userId) {
+        await updateUserById(userId, { CurrentPassword: currentPassword, Password: newPassword });
+        setPasswordMsg('Password updated!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      }
+    } catch (err) {
+      setPasswordMsg('Failed to update password.');
+    }
+    setSaving(false);
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -37,21 +68,21 @@ const Account = () => {
     }
   }, [navigate]);
 
-// Update handleSaveProfile to update both username and email
-const handleSaveProfile = async () => {
-  setSaving(true);
-  setSaveMsg(null);
-  const userId = localStorage.getItem('userId');
-  try {
-    if (userId) {
-      await updateUserById(userId, { Username: username, Email: email });
-      setSaveMsg('Profile updated!');
+  // Update handleSaveProfile to update both username and email
+  const handleSaveProfile = async () => {
+    setSaving(true);
+    setSaveMsg(null);
+    const userId = localStorage.getItem('userId');
+    try {
+      if (userId) {
+        await updateUserById(userId, { Username: username, Email: email });
+        setSaveMsg('Profile updated!');
+      }
+    } catch (err) {
+      setSaveMsg('Failed to update profile.');
     }
-  } catch (err) {
-    setSaveMsg('Failed to update profile.');
-  }
-  setSaving(false);
-};
+    setSaving(false);
+  };
 
   return (
     <div className="main-container" style={{ minHeight: '100vh', backgroundImage: "url('/Images/Background.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
@@ -100,7 +131,7 @@ const handleSaveProfile = async () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        mt: `${HEADER_HEIGHT + 32}px`, // margin-top to clear the fixed header
+        mt: `${HEADER_HEIGHT + 32}px`,
         gap: 6
       }}>
         {/* Left Panel */}
@@ -181,6 +212,8 @@ const handleSaveProfile = async () => {
                 type="password"
                 variant="outlined"
                 fullWidth
+                value={currentPassword}
+                onChange={e => setCurrentPassword(e.target.value)}
                 sx={{ mb: 3, input: { color: 'white' }, label: { color: 'white' }, background: 'rgba(255,255,255,0.05)' }}
                 InputLabelProps={{ style: { color: 'white' } }}
               />
@@ -189,6 +222,8 @@ const handleSaveProfile = async () => {
                 type="password"
                 variant="outlined"
                 fullWidth
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
                 sx={{ mb: 3, input: { color: 'white' }, label: { color: 'white' }, background: 'rgba(255,255,255,0.05)' }}
                 InputLabelProps={{ style: { color: 'white' } }}
               />
@@ -197,10 +232,25 @@ const handleSaveProfile = async () => {
                 type="password"
                 variant="outlined"
                 fullWidth
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
                 sx={{ mb: 3, input: { color: 'white' }, label: { color: 'white' }, background: 'rgba(255,255,255,0.05)' }}
                 InputLabelProps={{ style: { color: 'white' } }}
               />
-              <Button variant="contained" color="primary" sx={{ mt: 2, px: 4, fontWeight: 600, borderRadius: 2 }}>Save Password</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, px: 4, fontWeight: 600, borderRadius: 2 }}
+                onClick={handleSavePassword}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Password'}
+              </Button>
+              {passwordMsg && (
+                <Typography sx={{ mt: 2, color: passwordMsg.includes('updated') ? 'lightgreen' : 'red' }}>
+                  {passwordMsg}
+                </Typography>
+              )}
             </Box>
           )}
         </Paper>

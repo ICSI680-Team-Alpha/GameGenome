@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-// Drop existing indexes to ensure clean state
+
 mongoose.connection.once('open', async () => {
   try {
     await mongoose.connection.collection('users').dropIndexes();
@@ -46,13 +46,12 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', function(next) {
   this.UpdatedAt = new Date();
   if (!this.userID) {
-    // Generate a unique userID based on timestamp and a random number
     this.userID = Math.floor(Date.now() / 1000) + Math.floor(Math.random() * 1000);
   }
   next();
 });
 
-// Create indexes after schema is defined
+
 userSchema.index({ userID: 1 }, { unique: true });
 userSchema.index({ Username: 1 }, { unique: true });
 userSchema.index({ Email: 1 }, { unique: true });
