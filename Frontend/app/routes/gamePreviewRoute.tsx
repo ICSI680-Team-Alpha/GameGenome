@@ -1,9 +1,9 @@
 import type { Route } from "../+types/home";
 import GamePreview from "../gamePreview/gamePreview";
 
-export function meta({ }: Route.MetaArgs) {
+export function meta({ params }: Route.MetaArgs) {
   return [
-    { title: "Game Preview - GameGenome" },
+    { title: `Preview ${params.gameSlug} - GameGenome` },
     { name: "description", content: "Preview and explore game details on GameGenome." },
   ];
 }
