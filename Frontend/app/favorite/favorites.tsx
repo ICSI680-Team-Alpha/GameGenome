@@ -143,11 +143,17 @@ return (
               }}
             >
               <CardMedia
-                component="img"
-                image={game.image}
-                alt={game.title}
-                sx={{ height: 250, width:250, objectFit: 'cover' }}
-              />
+                    component="img"
+                    image={game.HeaderImage}
+                    alt={game.Name}
+                    sx={{
+                      width: 'auto', 
+                      height: 200,
+                      maxWidth: '100%',
+                      margin: '0 auto',
+                      display: 'block'
+                    }}
+                  />
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold' }}>
                   {game.title}
