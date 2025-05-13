@@ -51,20 +51,20 @@ export default function QuizRoute() {
     fetchQuizData();
   }, []);
 
-  // Sample genre data
+  
   const genreOptions: string[] = [
     'Action', 'Adventure', 'Fighting', 'Platformer',
     'Puzzle', 'Racing', 'RPG', 'Shooter',
     'Simulation', 'Sports', 'Strategy', 'Survival Horror'
   ];
 
-  // Sample play style data
+  
   const playStyleOptions: string[] = [
     'Solo games', 'Multiplayer with friends', 
     'Competitive multiplayer', 'Co-operative multiplayer'
   ];
 
-  // Sample gaming goals data
+  
   const goalOptions: string[] = [
     'Competition and achievement', 'Relaxation and entertainment',
     'Story and immersion', 'Social interaction'
@@ -114,13 +114,13 @@ export default function QuizRoute() {
     setStep(prev => prev - 1);
   };
 
-  // Function to handle quiz completion
+  
   const handleComplete = async (): Promise<void> => {
     try {
       console.log('=== Starting Quiz Completion ===');
       console.log('Current selections:', selections);
 
-      // Validate selection counts
+      
       if (selections.games.length < 3 || selections.games.length > 6) {
         throw new Error('Please select between 3 and 6 games');
       }
@@ -134,13 +134,19 @@ export default function QuizRoute() {
         throw new Error('Please select at least 1 goal');
       }
 
-      // Create the station first
+      
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('User must be logged in to create a station');
+      }
+
       console.log('Creating station...');
       const station = await createStation({
         stationID: Date.now(),
         name: stationName,
         type: 'quiz',
-        isActive: true
+        isActive: true,
+        userID: userId
       });
       console.log('Station created:', station);
 
@@ -188,11 +194,11 @@ export default function QuizRoute() {
 
       console.log('Sending quiz responses:', JSON.stringify(quizResponses, null, 2));
 
-      // Save quiz responses
+      
       const savedResponse = await saveQuizResponse(quizResponses);
       console.log('Quiz responses saved:', savedResponse);
 
-      // Navigate to recommendations
+      
       if (isForStationCreation) {
         navigate(`/Recommendations?stationId=${station._id}&new=true&name=${encodeURIComponent(stationName)}`);
       } else {
@@ -200,13 +206,13 @@ export default function QuizRoute() {
       }
     } catch (error) {
       console.error('Error completing quiz:', error);
-      // TODO: Show error message to user
+      
     }
   };
 
   // Quiz Welcome - Step 0
   const renderWelcomeQuiz = () => {
-    // Different welcome message based on purpose
+    
     const title = isForStationCreation 
       ? `Create Your "${stationName}" Station` 
       : "Welcome to Game Genome";

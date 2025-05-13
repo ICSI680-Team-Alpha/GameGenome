@@ -8,11 +8,11 @@ const steamGameSchema = new mongoose.Schema({
   Tags: { type: String },
   owners: { type: String },
   HeaderImage: { type: String },
-  Screenshots: { type: String }, // Stored as stringified JSON
+  Screenshots: { type: String }, 
   Background: { type: String }
 }, {
-  collection: 'steam_info', // Explicitly specify the collection name
-  timestamps: true // Automatically add createdAt and updatedAt fields
+  collection: 'steam_info', 
+  timestamps: true 
 });
 
 export const SteamGame = mongoose.model('steam_info', steamGameSchema); 

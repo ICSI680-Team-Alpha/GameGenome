@@ -100,7 +100,7 @@ const handleSaveProfile = async () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        mt: `${HEADER_HEIGHT + 32}px`, // margin-top to clear the fixed header
+        mt: `${HEADER_HEIGHT + 32}px`, 
         gap: 6
       }}>
         {/* Left Panel */}

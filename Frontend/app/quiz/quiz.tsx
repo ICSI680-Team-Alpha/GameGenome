@@ -139,17 +139,21 @@ const Quiz = () => {
         isActive: true
       });
       
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('User must be logged in to create a station');
+      }
+      
       const newStation = await createStation({
         stationID: stationId,
         name: stationName,
         type: 'quiz',
-        isActive: true
+        isActive: true,
+        userID: userId
       });
       
       console.log('Station created successfully:', newStation);
       
-      // Save quiz responses
-      const userId = 1; 
       
       const responses = quizzes.map(quiz => {
         const selectedIds = selectedOptions[quiz.quizID] || [];
@@ -178,7 +182,7 @@ const Quiz = () => {
       });
       
       await saveQuizResponse({
-        userID: userId.toString(),
+        userID: userId,
         stationID: newStation.stationID.toString(),
         timestamp: new Date(),
         responses
@@ -186,7 +190,7 @@ const Quiz = () => {
       
       console.log('Quiz responses saved successfully');
       
-      // Navigate to recommendations page
+      
       console.log('Navigating to recommendations page with stationId:', newStation._id);
       navigate(`/Recommendations?stationId=${newStation._id}`);
     } catch (err) {

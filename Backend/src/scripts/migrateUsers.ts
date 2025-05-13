@@ -3,22 +3,21 @@ import { config } from '../config';
 
 const migrateUsers = async () => {
   try {
-    // Connect to MongoDB
     await mongoose.connect(config.mongodbUri);
     console.log('Connected to MongoDB');
 
-    // Get the users collection
+    
     const db = mongoose.connection.db;
     const usersCollection = db.collection('users');
 
-    // Get all existing users
+    
     const existingUsers = await usersCollection.find({}).toArray();
     console.log(`Found ${existingUsers.length} users to migrate`);
 
-    // Update each user to match new schema
+   
     for (const user of existingUsers) {
       const updatedUser = {
-        userID: user.userID || parseInt(user._id.toString().slice(-6), 16), // Generate userID if not exists
+        userID: user.userID || parseInt(user._id.toString().slice(-6), 16), 
         Username: user.Username,
         Email: user.Email,
         PasswordHash: user.PasswordHash,
@@ -45,7 +44,7 @@ const migrateUsers = async () => {
         timestamp: user.CreatedAt || new Date()
       };
 
-      // Update the user document
+      
       await usersCollection.updateOne(
         { _id: user._id },
         { $set: updatedUser },
@@ -57,7 +56,7 @@ const migrateUsers = async () => {
 
     console.log('Migration completed successfully');
     
-    // Verify the migration
+    
     const migratedUsers = await usersCollection.find({}).toArray();
     console.log('Sample migrated user:', migratedUsers[0]);
     
@@ -70,5 +69,5 @@ const migrateUsers = async () => {
   }
 };
 
-// Run the migration
+
 migrateUsers(); 
