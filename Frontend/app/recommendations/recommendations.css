@@ -1,221 +1,213 @@
 .recommendations-container {
-    background-image: url('../public/Images/Background.png');
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    box-sizing: border-box;
-    position: relative;
-  }
-  
+  background-image: url('/Images/Background.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.recommendations-logo {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  width: 180px;
+  height: auto;
+  z-index: 10;
+}
+
+.new-station-alert {
+  position: relative;
+  width: 100%;
+  background-color: rgba(65, 105, 225, 0.8);
+  padding: 0.5rem 0;
+  z-index: 5;
+}
+
+.alert-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+}
+
+.recommendations-header {
+  background: rgba(20, 20, 20, 0.85);
+  width: 100%;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.back-button, .refresh-button {
+  color: white !important;
+}
+
+.recommendations-title {
+  color: white !important;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  width: 100%;
+}
+
+.loading-text {
+  color: white !important;
+  margin-top: 1.5rem !important;
+}
+
+.games-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 2rem auto !important;
+  padding: 0 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.game-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(40, 40, 40, 0.85) !important;
+  color: white !important;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
+}
+
+.game-image {
+  object-fit: cover;
+}
+
+.match-score {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.game-content {
+  flex-grow: 1;
+  padding: 1rem !important;
+}
+
+.game-title {
+  font-weight: 600 !important;
+  color: white !important;
+  margin-right: 0.5rem !important;
+  font-size: 1.1rem !important;
+}
+
+.game-description {
+  color: #cccccc !important;
+  margin: 0.5rem 0 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 4.5em;
+}
+
+.genre-chip {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #cccccc !important;
+  margin-right: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.action-button {
+  color: #cccccc !important;
+  margin-right: 0.25rem !important;
+}
+
+.like-button:hover {
+  color: #4CAF50 !important;
+}
+
+.dislike-button:hover {
+  color: #F44336 !important;
+}
+
+.save-button:hover {
+  color: #FFD700 !important;
+}
+
+/* Responsive styles */
+@media (max-width: 960px) {
   .recommendations-logo {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    width: 180px;
-    height: auto;
-    z-index: 10;
-  }
-  
-  .new-station-alert {
-    position: relative;
-    width: 100%;
-    background-color: rgba(65, 105, 225, 0.8);
-    padding: 0.5rem 0;
-    z-index: 5;
-  }
-  
-  .alert-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: white;
-  }
-  
-  .recommendations-header {
-    background: rgba(20, 20, 20, 0.8);
-    width: 100%;
-    padding: 1.5rem 2rem;
-    box-sizing: border-box;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-  }
-  
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .back-button {
-    color: white !important;
-    margin-right: 1rem !important;
-  }
-  
-  .refresh-button {
-    color: white !important;
-  }
-  
-  .recommendations-title {
-    color: white !important;
-    margin: 0 !important;
-    font-weight: 600 !important;
-  }
-  
-  .recommendations-subtitle {
-    color: #cccccc !important;
-    margin: 0 !important;
-    font-size: 0.9rem !important;
-  }
-  
-  .loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 60vh;
-    width: 100%;
-  }
-  
-  .loading-text {
-    color: white !important;
-    margin-top: 1.5rem !important;
-  }
-  
-  .games-grid {
-    max-width: 1200px;
-    margin: 2rem auto !important;
-    padding: 0 1.5rem;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .game-card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: rgba(40, 40, 40, 0.85) !important;
-    color: white !important;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
-    transition: transform 0.2s, box-shadow 0.2s;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  .game-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
-  }
-  
-  .game-image {
-    object-fit: cover;
-  }
-  
-  .match-score {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-weight: bold;
-  }
-  
-  .game-content {
-    flex-grow: 1;
-    padding: 1rem !important;
-  }
-  
-  .game-title {
-    font-weight: 600 !important;
-    color: white !important;
-    margin-right: 0.5rem !important;
-    font-size: 1.1rem !important;
-  }
-  
-  .game-description {
-    color: #cccccc !important;
-    margin: 0.5rem 0 !important;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: 4.5em;
-  }
-  
-  .genre-chip {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #cccccc !important;
-    margin-right: 0.25rem !important;
-    margin-bottom: 0.25rem !important;
-  }
-  
-  .action-button {
-    color: #cccccc !important;
-    margin-right: 0.25rem !important;
-  }
-  
-  .like-button:hover {
-    color: #4CAF50 !important;
-  }
-  
-  .dislike-button:hover {
-    color: #F44336 !important;
-  }
-  
-  .save-button:hover {
-    color: #FFD700 !important;
-  }
-  
-  /* Responsive styles */
-  @media (max-width: 960px) {
-    .recommendations-logo {
       width: 150px;
-    }
-    
-    .recommendations-header {
+  }
+
+  .recommendations-header {
       padding: 1.25rem;
-    }
-    
-    .games-grid {
+  }
+
+  .games-grid {
       margin: 1.5rem auto !important;
       padding: 0 1rem;
-    }
   }
-  
-  @media (max-width: 600px) {
-    .recommendations-logo {
+}
+
+@media (max-width: 600px) {
+  .recommendations-logo {
       width: 120px;
-    }
-    
-    .header-content {
+  }
+
+  .header-content {
       flex-wrap: wrap;
-    }
-    
-    .recommendations-header {
+  }
+
+  .recommendations-header {
       padding: 1rem;
-    }
-    
-    .games-grid {
+  }
+
+  .games-grid {
       margin: 1rem auto !important;
       padding: 0 0.75rem;
-    }
-    
-    .game-card {
-      margin-bottom: 1rem;
-    }
   }
+
+  .game-card {
+      margin-bottom: 1rem;
+  }
+}

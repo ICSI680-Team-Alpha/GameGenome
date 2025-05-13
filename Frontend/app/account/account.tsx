@@ -3,9 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './account.css';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHome } from '@fortawesome/free-solid-svg-icons';
 import { Box, Button, TextField, Typography, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { getUserById } from '../services/api';
+import { getUserById, updateUserById } from '../services/api';
 
 const HEADER_HEIGHT = 100;
 
@@ -13,19 +14,44 @@ const Account = () => {
   const [selectedOption, setSelectedOption] = useState<'Profile' | 'Password'>('Profile');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchUser = async () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         const user = await getUserById(userId);
-        setUsername(user.Username);
-        setEmail(user.Email);
+        setUsername(user.data.Username);
+        setEmail(user.data.Email);
       }
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (!localStorage.getItem('userId')) {
+      navigate('/');
+    }
+  }, [navigate]);
+
+// Update handleSaveProfile to update both username and email
+const handleSaveProfile = async () => {
+  setSaving(true);
+  setSaveMsg(null);
+  const userId = localStorage.getItem('userId');
+  try {
+    if (userId) {
+      await updateUserById(userId, { Username: username, Email: email });
+      setSaveMsg('Profile updated!');
+    }
+  } catch (err) {
+    setSaveMsg('Failed to update profile.');
+  }
+  setSaving(false);
+};
 
   return (
     <div className="main-container" style={{ minHeight: '100vh', backgroundImage: "url('/Images/Background.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
@@ -47,10 +73,25 @@ const Account = () => {
       }}>
         <img src="/Images/LOGO.png" alt="GameGenome Logo" style={{ height: 60 }} />
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button variant="outlined" sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => navigate('/Account')}>
+          <Button
+            variant="contained"
+            startIcon={<FontAwesomeIcon icon={faHome} />}
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
+            onClick={() => navigate('/Stations')}
+          >
+            Stations
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2, minWidth: 0, width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => navigate('/Account')}
+          >
             <FontAwesomeIcon icon={faUser} />
           </Button>
-          <Button variant="outlined" sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }} startIcon={<FontAwesomeIcon icon={faHeart} />} onClick={() => navigate('/Favorites')}>Favorite Games</Button>
+          <Button
+            variant="contained"
+            sx={{ color: 'black', background: 'white', fontWeight: 600, borderRadius: 4, px: 2 }}
+            startIcon={<FontAwesomeIcon icon={faHeart} />} onClick={() => navigate('/Favorites')}>Favorite Games</Button>
         </Box>
       </Box>
 
@@ -79,6 +120,17 @@ const Account = () => {
           >
             Password
           </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            sx={{ width: '100%', fontWeight: 600, mt: 2, background: 'white', color: 'red', borderColor: 'red' }}
+            onClick={() => {
+              localStorage.clear();
+              navigate('/');
+            }}
+          >
+            Logout
+          </Button>
         </Paper>
 
         {/* Right Panel */}
@@ -97,7 +149,7 @@ const Account = () => {
               />
               <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>Email</Typography>
               <TextField
-                placeholder="your.email@example.com"
+                placeholder="Your email"
                 variant="outlined"
                 fullWidth
                 value={email}
@@ -105,7 +157,20 @@ const Account = () => {
                 sx={{ mb: 4, input: { color: 'white' }, label: { color: 'white' }, background: 'rgba(255,255,255,0.05)' }}
                 InputLabelProps={{ style: { color: 'white' } }}
               />
-              <Button variant="contained" color="primary" sx={{ mt: 2, px: 4, fontWeight: 600, borderRadius: 2 }}>Save Changes</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, px: 4, fontWeight: 600, borderRadius: 2 }}
+                onClick={handleSaveProfile}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </Button>
+              {saveMsg && (
+                <Typography sx={{ mt: 2, color: saveMsg.includes('updated') ? 'lightgreen' : 'red' }}>
+                  {saveMsg}
+                </Typography>
+              )}
             </Box>
           )}
           {selectedOption === 'Password' && (

@@ -24,7 +24,9 @@ import {
   faPlus, 
   faGamepad, 
   faTrash,
-  faEdit
+  faEdit,
+  faUser,
+  faHeart
 } from '@fortawesome/free-solid-svg-icons';
 
 import { getStations, deleteStation, updateStation, Station } from '../services/api';
@@ -41,6 +43,14 @@ const Stations = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [currentStationId, setCurrentStationId] = useState<string | null>(null);
   const [newStationName, setNewStationName] = useState('');
+  
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (!token || !userId) {
+      navigate('/login');
+    }
+  }, [navigate]);
   
   useEffect(() => {
     fetchStations();
@@ -120,7 +130,6 @@ const Stations = () => {
   return (
     <div className="stations-container">
       <AppHeader />
-      {/* <img src="/Images/LOGO.png" alt="GameGenome Logo" className="stations-logo" /> */}
       
       <Typography variant="h3" component="h1" className="stations-title">
         Your Game Stations

@@ -52,6 +52,10 @@
 }
 
 .stations-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto !important;

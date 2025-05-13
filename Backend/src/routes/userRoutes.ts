@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser, getUser, loginUser } from '../controllers/userController';
+import { createUser, getUser, loginUser, updateUser } from '../controllers/userController';
 
 const router = express.Router();
 
@@ -11,5 +11,8 @@ router.post('/login', loginUser);
 
 // Get user by ID
 router.get('/:id', getUser);
+
+// Update user by ID
+router.patch('/:id', updateUser);
 
 export const userRoutes = router; 
