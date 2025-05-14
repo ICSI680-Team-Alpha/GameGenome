@@ -28,7 +28,7 @@ export const errorHandler = (
     });
   }
 
-  // Log unexpected errors
+  
   console.error('ERROR 💥', err);
 
   return res.status(500).json({

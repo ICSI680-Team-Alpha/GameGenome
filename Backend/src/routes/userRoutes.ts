@@ -3,13 +3,13 @@ import { createUser, getUser, loginUser, updateUser } from '../controllers/userC
 
 const router = express.Router();
 
-// Create a new user
+
 router.post('/signup', createUser);
 
-// Login user
+
 router.post('/login', loginUser);
 
-// Get user by ID
+
 router.get('/:id', getUser);
 
 // Update user by ID

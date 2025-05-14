@@ -33,13 +33,12 @@ const LogIn = () => {
         throw new Error('Invalid response from server');
       }
 
-      // Store token and user data
+      
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userData', JSON.stringify(response.data.user));
       localStorage.setItem('userId', response.data.user._id);
       
       console.log('Login successful, navigating to /Stations');
-      // Use React Router navigation
       navigate('/Stations', { replace: true });
     } catch (err) {
       console.error('Login error:', err);

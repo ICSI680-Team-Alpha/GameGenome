@@ -4,14 +4,13 @@ import { User } from '../models/User';
 
 async function resetDatabase() {
   try {
-    // Connect to MongoDB
     await mongoose.connect('mongodb://localhost:27017/Gamegenome');
     
-    // Drop existing collections
+    
     await User.collection.drop();
     await Counter.collection.drop();
     
-    // Create a fresh counter
+    
     await Counter.create({
       _id: 'userId',
       seq: 0

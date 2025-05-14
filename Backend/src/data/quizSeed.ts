@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Quiz } from '../models/Quiz';
 
-// Load environment variables
+
 dotenv.config();
 
 const quizData = [
@@ -94,5 +94,5 @@ export const seedQuizzes = async () => {
   }
 };
 
-// Execute the seed function
+
 seedQuizzes().catch(console.error); 

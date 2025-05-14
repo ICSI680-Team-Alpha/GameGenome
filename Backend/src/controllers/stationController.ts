@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Station } from '../models/Station';
 import { AppError } from '../middleware/errorHandler';
 
-// Define interface for authenticated request
+
 interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
@@ -15,7 +15,6 @@ export const createStation = async (
   next: NextFunction
 ) => {
   try {
-    // Ensure userID is set from the authenticated user
     const userID = req.user?.id;
     if (!userID) {
       return next(new AppError('User must be authenticated to create a station', 401));
@@ -43,14 +42,12 @@ export const getAllStations = async (
   next: NextFunction
 ) => {
   try {
-    // Get the user ID from the authenticated request
     const userID = req.user?.id;
     if (!userID) {
       return next(new AppError('User must be authenticated to view stations', 401));
     }
 
     console.log('Backend: Getting stations for user:', userID);
-    // Only find stations that belong to this user
     const stations = await Station.find({ userID: userID }).sort('-timestamp');
     console.log('Backend: Found stations:', stations);
     

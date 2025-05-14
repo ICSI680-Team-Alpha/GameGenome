@@ -116,9 +116,9 @@ const GamePreview: React.FC = () => {
           {game.screenshots.map((s, idx) => (
             <img key={idx} src={s.image} alt={`Screenshot ${idx}`} className="media-image" />
           ))}
-          {game.trailers.map((t, idx) => (
+          {game.trailers?.data?.map((t, idx) => (
             <video key={idx} controls className="media-video">
-              <source src={t.data.max} type="video/mp4" />
+              <source src={t.max} type="video/mp4" />
             </video>
           ))}
         </div>

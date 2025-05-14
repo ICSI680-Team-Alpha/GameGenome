@@ -5,24 +5,23 @@ import { Quiz } from '../models/Quiz';
 
 const seedDatabase = async () => {
   try {
-    // Connect to MongoDB using the correct URI
     await mongoose.connect(config.mongodbUri);
     console.log('Connected to MongoDB');
 
-    // Drop the quiz collection entirely to ensure a clean state
+    
     console.log('Dropping quiz collection...');
     await mongoose.connection.db.dropCollection('quiz').catch(err => {
-      if (err.code !== 26) { // 26 is the error code for "namespace not found"
+      if (err.code !== 26) { 
         throw err;
       }
       console.log('Quiz collection did not exist, proceeding with seed...');
     });
 
-    // Run the seeding operation
+    
     await seedQuizzes();
     console.log('Quiz seeding completed successfully');
 
-    // Close the connection
+    
     await mongoose.connection.close();
     console.log('MongoDB connection closed');
     
@@ -33,5 +32,5 @@ const seedDatabase = async () => {
   }
 };
 
-// Run the seeding process
+
 seedDatabase(); 
